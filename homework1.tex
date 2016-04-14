@@ -1,0 +1,254 @@
+\documentclass[12pt,letterpaper]{article}
+\usepackage{amsmath, amssymb}
+\usepackage{fullpage}
+\usepackage{amsmath}
+\pagestyle{empty}
+\def\pp{\par\noindent}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\renewcommand{\baselinestretch}{1.2}
+\newcommand{\problem}[1]{ \bigskip \pp \textbf{Problem #1}\par}
+\newcommand{\solution}{\pp\textit{Solution:}\par}
+\newcommand{\answer}{\medskip\pp\textit{Answer:} }
+\newcommand{\lemma}[1]{\medskip\pp\textit{Lemma #1:}}
+\newcommand{\proof}{\medskip\pp\textit{Proof:}\par}
+\newcommand{\hint}[1] {\par{\footnotesize {\bf Hint:} #1}}
+\newcommand{\remark}[1]{\par{\footnotesize {\bf Remark:} #1}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\bbZ}    {\mathbb{Z}}
+\newcommand{\bbQ}    {\mathbb{Q}}
+\newcommand{\bbN}    {\mathbb{N}}
+\newcommand{\bbB}    {\mathbb{B}}
+\newcommand{\bbR}    {\mathbb{R}}
+\newcommand{\bbC}    {\mathbb{C}}
+\newcommand{\calP}   {{\cal{P}}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\DeclareMathOperator{\E}{E}
+\DeclareMathOperator{\Var}{Var}
+\DeclareMathOperator{\cov}{cov}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\centerline{\bf EECS 336}
+
+\medskip
+\centerline{Jiaju Ni}
+\centerline{Homework 1}
+\bigskip
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% problem 1
+\problem{1}
+\begin{enumerate}
+% 1
+\item
+\begin{solution}
+$2^{2^{n+1}}=\Omega(n^22^{2n})$, $n^22^{2n}=\Omega((\frac{9}{4})^n)$, $(\frac{9}{4})^n=\Omega(n^{\lg\lg n})$, $n^{\lg\lg n}=\Omega(n^3)$, $n^3=\Omega(\lg n!)$, $\lg n!=\Omega(\lg^4n)$, $\lg^4n=\Omega(\ln^2n)$, $\ln^2{n})=\Omega(\ln^2\ln{n})$, $\ln^2\ln{n}=\Omega(\lg^*n)$, $\lg^*n=\Omega(1)$, $1=\Theta(n^{\frac{1}{\lg{n}}})$
+\end{solution}
+\begin{proof}
+\begin{enumerate}
+% 1.1
+\item $2^{2^{n+1}}=\Omega(n^22^{2n})$\\
+\begin{align*}
+n^22^{2n} &\leq 2^n\cdot 2^{2n}\\
+&=2^{3n} \text{ (for $n \geq 4$)}\\
+&\leq 2^{2^{n+1}}
+\end{align*}
+Choose $c=1$, $n_0 = 4$, for any $n \geq n_0$ we have $n^22^{2n} \leq 2^{2^{n+1}}$,
+$\therefore 2^{2^{n+1}}=\Omega(n^22^{2n})$.
+% 2.1
+\item $n^22^{2n}=\Omega((\frac{9}{4})^n)$
+\begin{align*}
+&\because \lim_{n\to\infty}\frac{n^22^{2n}}{\frac{9}{4}^n}
+= \lim_{n\to\infty}n^2(\frac{16}{9})^n
+= \infty\\
+&\therefore n^22^{2n}=\Omega((\frac{9}{4})^n)\\
+&\therefore n^22^{2n}=\Omega((\frac{9}{4})^n)
+\end{align*}
+% 3.1
+\item $(\frac{9}{4})^n=\Omega(n^{\lg\lg n})$\\
+% 4.1
+\item $n^{\lg\lg n}=\Omega(n^3)$\\
+Choose $c=1$, $n_0=10^{1000}$. For any $n>n_0$, we have $n^{\lg\lg n}>c\cdot n^3$, therefore $n^{\lg\lg n}=\Omega(n^3)$.
+% 5.1
+\item $n^3=\Omega(\lg n!)$\\
+Because $n^3=\omega(n\ln n)$ (proof: $\lim_{n\to\infty}\frac{n^3}{n\ln n} = \lim_{n\to\infty} {2n^2} = \infty$), $n\ln n=\Theta(n\lg n)$, $n\lg n=\Theta(\lg n!)$, therefore $n^3=\Omega(\lg n!)$.
+% 6.1
+\item $\lg n!=\Omega(\lg^4n)$\\
+Because $\lg n!=\Theta(n\lg n)$, $n\lg n=\omega(n)$, $n=\omega(\ln^4n)$ (proof: $\lim_{n\to\infty} \frac{n}{\ln^4n} = \lim_{n\to\infty}\frac{n}{4\ln^3n} = \lim_{n\to\infty}\frac{n}{12\ln^2n} = \lim_{n\to\infty}\frac{n}{24\ln n} = \lim_{n\to\infty}\frac{n}{24} = \infty$), $\ln^4n=\Theta(\lg^4n)$, therefore $\lg n!=\Omega(\lg^4n)$.
+% 7.1
+\item $\lg^4n=\Omega(\ln^2n)$\\
+Because $\lg^4n=\omega(\lg^2n)$ (proof: $\lim_{n\to\infty} \frac{\lg^4n}{\lg^2n} = \lim_{n\to\infty} \lg^2n = \infty$), and $\lg^2n=\Theta(\ln^2n)$, therefore $\lg^4n=\Omega(\ln^2n)$.
+% 8.1
+\item $\ln^2{n}=\Omega(\ln^2\ln{n})$\\
+Because $n=\omega(\ln{n})$ (proof: $\lim_{n\to\infty} \frac{n}{\ln n} = \lim_{n\to\infty} n = \infty$), we can get $\ln{n}=\omega(\ln\ln{n})$. Apply that again, we get $\ln^2{n}=\omega(\ln^2\ln{n})$, therefore $\ln^2{n}=\Omega(\ln^2\ln{n})$.
+% 9.1
+\item $\ln^2\ln{n}=\Omega(\lg^*n)$\\
+Because $\ln^2\ln{n}=\omega(\ln\ln{n})$ (proof: $\lim_{n\to\infty}\frac{\ln^2\ln{n}}{\ln\ln{n}} = \lim_{n\to\infty} \ln\ln{n} = \infty$), $\ln\ln{n}=\Theta(\lg\lg{n})$ and $\lg\lg{n}=\Omega(\lg^*n)$ (proof by definition), we get $\ln^2\ln{n}=\Omega(\lg^*n)$.
+% 10.1
+\item $\lg^*n=\Omega(1)$\\
+For any constant $c$, we can choose an $n_0$ which makes $\lg^*n > c$ for any $n > n_0$.
+% 11.1
+\item $1=\Theta(n^{\frac{1}{\lg{n}}})$
+\begin{align*}
+\because n^{\frac{1}{\lg{n}}} &= c\\
+\frac{1}{\lg{n}}\lg{n} &= \lg{c}\\
+c &= 10\\
+\therefore 1 &= \Theta(n^{\frac{1}{\lg{n}}})
+\end{align*}
+\end{enumerate}
+\end{proof}
+\item
+$|\tan(x)|$
+\end{enumerate}
+
+% problem 2
+\problem{2}
+\begin{enumerate}
+% subproblem 1
+\item $f(n)=\lg(\lg^*n)+2^{\lg n}\times(\lg n)^{\lg n}$
+\begin{align*}
+&\because 2^{\lg n}=\omega(\lg(\lg^*n)) \text{ and }(\lg n)^{\lg n}=\omega(\lg(\lg^*n))\\
+&\therefore 2^{\lg n}\times(\lg n)^{\lg n}\text{ dominants.}\\
+&f(n)=\Theta((2\lg n)^{\lg n})
+\end{align*}
+% subproblem 2
+\item $f(n)=2^{\lg^*n}\times\lg((\lg n)^{\lg n})+(4^{\lg n})^3$
+% subproblem 3
+\item $f(n)=(\sqrt{2})^{\lg n}+e^n+\lg(\sqrt{\lg n})$\\
+choose $c=1$ and $n_0=10$, for each $n>n_0$:
+\begin{align*}
+&e^n>(\sqrt{2})^{\lg n}>\lg(\sqrt{\lg n})>0\\
+&\therefore e^n=\omega((\sqrt{2})^{\lg n}) \text{ and } e^n=\omega(\lg(\sqrt{\lg n}))\\
+&\therefore e^n\text{ dominants.}\\
+&\therefore f(n)=\Theta(e^n)
+\end{align*}
+% subproblem 4
+\item $f(n)=n^2\times(4^{\lg n})^3+(\sqrt{2})^{\lg n}$
+\begin{align*}
+&\because (4^{\lg n})^3=2^{6\lg n}=\omega(2^{\frac{\lg n}{2}})=\omega((\sqrt{2})^{\lg n})\\
+&\therefore n^2\times(4^{\lg n})^3\text{ dominants.}\\
+&\therefore f(n)=\Theta(n^2\times(4^{\lg n})^3)=\Theta(n^8)
+\end{align*}
+% subproblem 5
+\item $f(n)=n!\times(\lg n)!\times\sqrt{\lg n}+2^{\lg^*n}$
+\begin{align*}
+&\because n!=\omega(2^n),2^n=\omega(2^{\lg^*n})\\
+&\therefore n!=\omega(2^{\lg^*n})\\
+&\therefore n!\times(\lg n)!\times\sqrt{\lg n}\text{ dominants.}\\
+&f(n)=\Theta(n!\times(\lg n)!\times\sqrt{\lg n})
+\end{align*}
+% subproblem 6
+\item $f(n)=2^{(n+1)!}+(\sqrt{2})^{\lg n}$
+\begin{align*}
+&\because 2^{(n+1)!}=\omega(2^n), 2^n=\omega(2^{\lg n}),2^{\lg n}=\omega((\sqrt{2})^{\lg n})\\
+&\therefore 2^{(n+1)!}=\omega((\sqrt{2})^{\lg n})\\
+&\therefore 2^{(n+1)!}\text{ dominants.}\\
+&f(n)=\Theta(2^{(n+1)!})
+\end{align*}
+\end{enumerate}
+
+% problem 3
+\problem{3}
+\begin{enumerate}
+% subproblem 1
+\item
+\begin{solution}
+$f(n)=|n+tan(0.1\times n)|, g(n)=n$\\
+\end{solution}
+% subproblem 2
+\item
+\textbf{Advantage}\\
+The "Omega infinity" extends the definition of "Omega", especially to some periodic function or non-continuous function. For example, in the answer of the previous subproblem, g(n) gives a meaningful asymptotic analysis of the lower bound of running time.\\
+\textbf{Disadvantage}\\
+If we have $f(n)=n$ and $g(n)=|n+tan(0.1\times n)|$, we still can find infinitely many integers $n$ such that $f(n)\geq cg(n)\geq 0$. However, this lower bound is not meaningful. In many integers $n$, $g(n)$ could be very large.
+% subproblem 3
+\item
+In the direction of proof $\Omega$, nothing changes.\\
+If we assume $f(n)>0$ (just like the text book did), then also nothing changes in the direction of proof "soft-oh".\\
+If $f(n)$ is allowed to be negative, then its upper bound could be different from that of $O$. Its $O'$ upper bound would be $|g(n)|$.  ($f(n)=\Omega(g(n))$)
+% subproblem 4
+\item
+\begin{align*}
+\widetilde{\Omega}(g(n))=\{f(n): \text{ there exist positive constants $c$, $k$, and $n_0$ such that }\\
+0\leq f(n)\leq cg(n)\lg^k(n)\text{ for all }n\geq n_0\}.\\
+\widetilde{\Theta}(g(n))=\{f(n): \text{ there exist positive constants $c_1$, $k_1$, $c_2$, $k_2$ and $n_0$ such that}\\
+0\leq c_1g(n)\lg^{k_1}(n)\leq f(n)\leq c_2g(n)\lg^{k_2}(n)\text{ for all }n\geq n_0\}.
+\end{align*}
+\lemma{1}
+$f(n)=\widetilde{\Theta}(g(n))$ if and only if $f(n)=\widetilde{O}(g(n))$ and $f(n)=\widetilde{\Omega}(g(n))$
+\begin{proof}
+\begin{align*}
+&\because f(n)=\widetilde{\Omega}(g(n))\text{ and }f(n)=\widetilde{O}(g(n))\\
+&\therefore \text{ there exist positive constant $c_1$, $k_1$, $c_2$, $k_2$ and $n_1$, $n_2$ such that,}\\
+&0\leq c_1g(n)\lg^{k_1}(n)\leq f(n)\text{ for all }n\geq n_1\text{ and }0\leq f(n)\leq c_2g(n)\lg^{k_2}(n)\text{ for all }n\geq n_2\\
+&\text{choose } n_0=\max(n_1, n_2)\text{ we have: }\\
+&0\leq c_1g(n)\lg^{k_1}(n)\leq f(n)\leq c_2g(n)\lg^{k_2}(n)\text{ for all }n\geq n_0\\
+&\therefore f(n)=\widetilde{\Theta}(g(n))
+\end{align*}
+It is easy to proof in the other direction, just follow the definition, not repeat here.
+\end{proof}
+\end{enumerate}
+
+% problem 4
+\problem{4}
+\begin{enumerate}
+% a
+\item $f(n)=n-1, c=2$\\
+\begin{align*}
+f_2^*(n)&=\min\{i\geq0: f^{(i)}(n)\leq2\}\\
+&=\min\{i\geq0:n-i\leq2\}\\
+&=n-2\\
+&=\Theta(n)
+\end{align*}
+% c
+\item $f(n)=n/2, c=3$
+\begin{align*}
+f_3^*(n)&=\min\{i\geq0: f^{(i)}(n)\leq3\}\\
+&=\min\{i\geq0:\frac{n}{2^i}\leq3\}\\
+&=\min\{i\geq0:n\leq3\cdot 2^i\}\\
+&=\min\{i\geq0:i\geq\lg n-\lg 3\}\\
+&=\lg n-\lg 3\\
+&=\Theta(\lg n)
+\end{align*}
+% e
+\item $f(n)=\sqrt{n}, c=4$
+\begin{align*}
+f_4^*(n)&=\min\{i\geq0: f^{(i)}(n)\leq4\}\\
+&=\min\{i\geq0:n^{\frac{1}{2^i}}\leq4\}\\
+&=\min\{i\geq0:\frac{1}{2^i}\lg n\leq2\}\\
+&=\min\{i\geq0:2^i\geq\frac{1}{2}\lg n\}\\
+&=\min\{i\geq0:i\geq\lg(\lg \sqrt{n})\}\\
+&=\lg(\lg \sqrt{n})\\
+&=\lg\lg n-1\\
+&=\Theta(\lg\lg n)
+\end{align*}
+% g
+\item $f(n)=n^\frac{1}{3}, c=4$
+\begin{align*}
+f_4^*(n)&=\min\{i\geq0: f^{(i)}(n)\leq4\}\\
+&=\min\{i\geq0:n^{\frac{1}{3^i}}\leq4\}\\
+&=\min\{i\geq0:\frac{1}{3^i}\lg n\leq2\}\\
+&=\min\{i\geq0:3^i\geq\frac{1}{2}\lg n\}\\
+&=\min\{i\geq0:i\geq\log_3(\lg \sqrt{n})\}\\
+&=\log_3(\lg \sqrt{n})\\
+&=\lg(\lg \sqrt{n})\\
+&=\lg\lg n-1\\
+&=\Theta(\lg\lg n)
+\end{align*}
+% h
+\item $h(n)=\frac{n}{\lg n}, c=4$
+\begin{align*}
+&\because \lg n\geq2, \lg n\leq\sqrt{n}\text{ (for all $n\geq4$)}\\
+&\therefore \frac{n}{\sqrt{n}}\leq\frac{n}{\lg n}\leq\frac{n}{2}\\
+&\because f_4^*(\sqrt{n})=\Theta(\lg\lg n), f_4^*(\frac{n}{2})=\Theta(\lg n)\\
+&\therefore f_4^*(\frac{n}{\lg n})=\Omega(\lg\lg n), f_4^*(\frac{n}{\lg n})=O(\lg n)
+\end{align*}
+\end{enumerate}
+\end{document}
