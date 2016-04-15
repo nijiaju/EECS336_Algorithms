@@ -2,6 +2,7 @@
 \usepackage{amsmath, amssymb}
 \usepackage{fullpage}
 \usepackage{amsmath}
+\usepackage{enumitem}
 \pagestyle{empty}
 \def\pp{\par\noindent}
 
@@ -44,3 +45,8 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % problem 1
+\problem{1}
+\begin{enumerate}[label=\alph*.]
+	\item For algorithm A, we have $a=5$, $b=2$, $f(n)=\Theta(n)+\Theta(n)=\Theta(n)$, and thus we have that $n^{\log_b^a}=n^{\log_2^5}$. Since $f(n)=O(n^{\log_2^5-\varepsilon})$, where $\varepsilon=n^{\log_2^5}-1$
+\end{enumerate}
+\end{document}
