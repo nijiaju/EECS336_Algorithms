@@ -39,14 +39,121 @@
 
 \medskip
 \centerline{Jiaju Ni}
-\centerline{Homework 1}
+\centerline{Homework 2}
 \bigskip
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % problem 1
 \problem{1}
-\begin{enumerate}[label=\alph*.]
-	\item For algorithm A, we have $a=5$, $b=2$, $f(n)=\Theta(n)+\Theta(n)=\Theta(n)$, and thus we have that $n^{\log_b^a}=n^{\log_2^5}$. Since $f(n)=O(n^{\log_2^5-\varepsilon})$, where $\varepsilon=n^{\log_2^5}-1$
+\begin{enumerate}[label=(\alph*)]
+	\item For algorithm A, we have $a=5$, $b=2$, $f(n)=\Theta(n)+\Theta(n)=\Theta(n)$, and thus we have that $n^{\log_b^a}=n^{\log_2^5}$. Since $f(n)=O(n^{\log_2^5-\varepsilon})$, where $\varepsilon=n^{\log_2^5}-1$, we can apply case 1 of the master theorem and conclude that the solution is $T(n)=\Theta(n^{\log_2^5})$.
+	\item For algorithm B, we have $T(n)=2(T(n-1))+\Theta(1)$. The solution is $T(n)=\Theta(2^n)$.
+	\item For algorithm C, we have $a=9$, $b=3$, $f(n)=\Theta(n^3)+\Theta(n^2)=\Theta(n^3)$, and thus we have that $n^{\log_b^a}=n^{\log_3^9}=n^2$. Since $f(n)=n^3=\Omega(n^{\log_b^a+\varepsilon})$, where $\varepsilon=1$. For sufficiently large $n$, we have $af(n/b)=9(n/3)^3=n^3/3\leq cf(n)$ for $c=1/3$. Consequently, by case 3 of the master method, the solution to is $T(n)=\Theta(n^3)$.
 \end{enumerate}
+According to the calculation of time complexities above, I would perfer algorithm A.
+
+% problem 2
+\problem{2}
+\[T(n)=3\cdot T(n^{\frac{1}{3}})+24\cdot T(n^{\frac{1}{6}})+(\log n)^2\cdot(\log\log n)^{1.5}+101,000,078\]
+Renaming $m=\log n$ yields
+\[T(2^m)=3\cdot T(2^\frac{m}{3})+24\cdot T(2^\frac{m}{6})+m^2\cdot(\log m)^{1.5}+101,000,078\]
+Renaming $S(m)=T(2^m)$ yiels
+\[S(m)=3\cdot S(\frac{m}{3})+24\cdot S(\frac{m}{6})+m^2\cdot(\log m)^{1.5}+101,000,078\]
+The characteristic equation
+\[3\cdot(\frac{1}{3})^x+24\cdot(\frac{1}{6})^x=1\]
+\[x=2\]
+We have case 2, $x=\alpha$. Consequently, the solution is $S(m)=\Theta(m^2(\log m)^{2.5})$. Changing back from $S(m)$ to $T(n)$, we obtain $T(n)=\Theta(\log^2n(\log\log n)^{2.5})$.
+
+% problem 3
+\problem{3}
+(In the following solutions, solution 1 uses the master method discussed in class, solution 2 uses the Akra-Bazzi master method and solution 3 uses the one introduced in the text book.) 
+\begin{enumerate}[label=(\alph*)]
+	% a
+	\item$T(n)=5\cdot T(\frac{n}{2})+176\cdot T(\frac{n}{4})+n^4(\log n)^{-3}$
+		\begin{enumerate}[label=\arabic*.]
+			\item Can not apply to this master method. ($\beta$ must be greater than zero)
+			\item We have $p=4$. Because the recurrence is invalid when $n=1$, so the low bound of the integral should be 2.
+				\begin{align*}
+					T(x)&=\Theta(x^4(1+\int_2^x\frac{u^4\log^{-3}u}{u^5}du))\\
+					&=\Theta(x^4(1-\frac{1}{2}\int_2^xd\log^{-2}u))\\
+					&=\Theta(x^4(1-\frac{1}{2}\log^{-2}x+c))\\
+					&=\Theta(x^4)
+				\end{align*}
+			\item Can not apply to this master method.
+		\end{enumerate}
+	% b
+	\item$T(n)=5\cdot T(\frac{n}{3})+4\cdot T(\frac{n}{6})+26\cdot T(\frac{n}{9})+n^2$
+		\begin{enumerate}[label=\arabic*.]
+			\item The characteristic equation is $5\cdot(\frac{1}{3})^x+4\cdot(\frac{1}{6})^n+26\cdot(\frac{1}{9})^n=1$ and the solution of the equation is less than $2$. We have case 1, $x<\alpha$. Therefore, the solution is $T(n)=\Theta(n^2)$.
+			\item Because $p$ is slightly less than 2. Therefore,
+				\begin{align*}
+					T(x)&=\Theta(x^p(1+\int_1^x\frac{u^2}{u^{p+1}}du))\\
+					&=\Theta(x^p(1+\frac{1}{2-p}\int_1^xdu^{2-p}))\\
+					&=\Theta(x^p(\frac{x^{2-p}}{2-p}-\frac{1}{2-p}+1)\\
+					&=\Theta(\frac{1}{2-p}x^2+(1-\frac{1}{2-p})x^p)\\
+					&=\Theta(x^2)
+				\end{align*}
+			\item Can not apply to this master method.
+		\end{enumerate}
+	% c 
+	\item$T(n)=25\cdot T(\frac{n}{5})+n^2\log n$
+		\begin{enumerate}[label=\arabic*.]
+			\item The characteristic equation is $25\cdot(\frac{1}{5})^x=1$ and the solution of the equation is $x=2$. We have case 2, $x=\alpha$. Therefore, the solution is $T(n)=\Theta(n^2(\log n)^2)$.
+			\item We have $p=2$. Thus,
+				\begin{align*}
+					T(x)&=\Theta(x^2(1+\int_1^x\frac{u^2\log u}{u^3}du))\\
+					&=\Theta(x^2(1+\frac{1}{2}\int_1^xd\log^2u))\\
+					&=\Theta(x^2(1+\frac{1}{2}\log^2x)\\
+					&=\Theta(x^2\log^2x)
+				\end{align*}
+			\item We have $a=25$, $b=5$. Thus, $n^{\log_ba}=n^{\log_525}=n^2$. $f(n)=n^2\log n$, since $f(n)/n^{\log_ba}=n^2\log n/n^2=\log n$, which is asymptotically less than $n^\varepsilon$ for any positive constant $\varepsilon$, thus $f(n)$ is not asympotically larger than $n^{\log_ba}$. Consequently, the master method does not apply to the recurrence.
+		\end{enumerate}
+	% d
+	\item$T(n)=5\cdot T(\frac{n}{5})+n^2\log n$
+		\begin{enumerate}[label=\arabic*.]
+			\item The characteristic equation is $5\cdot(\frac{1}{5})^x=1$ and the solution of the equation is $x=1$. We have case 1, $x<\alpha$. Therefore, the solution is $T(n)=\Theta(n^2\log n)$.
+			\item We have $p=1$. Thus,
+				\begin{align*}
+					T(n)&=\Theta(x(1+\int_1^x\frac{u^2\log u}{u^2}du))\\
+					&=\Theta(x(1+\int_1^x\log udu))\\
+					&=\Theta(x(1+\int_1^xdu\log u-\int_1^xdu))\\
+					&=\Theta(x(1+x\log x-x+1))\\
+					&=\Theta(x(2-x+x\log x))\\
+					&=\Theta(x^2\log x)
+				\end{align*}
+			\item We have $a=5$, $b=5$. Thus, $n^{\log_ba}=n^{\log_55}=n$. Since $f(n)=n^2\log n=\Omega(n^2)=\Omega(n^{\log_ba+\varepsilon})$ where $\varepsilon=1$, and $af(n/b)=5(n/5)^2\log(n/5)=\frac{n^2}{5}(\log n-\log 5)<\frac{n^2}{5}\log n\leq cf(n)$, where $c=\frac{1}{5}$. Consequently, case 3 applies. $T(n)=\Theta(n^2\log n)$.
+		\end{enumerate}
+\end{enumerate}
+
+% problem 4
+\problem{4}
+
+% problem 5
+\problem{5}
+\textbf{My algorithm:}\par
+First, find an interval $[a, b]$, where $f(a)\geq0$ and $f(b)\leq0$. We can achieve this by checking a series of points $f(2^k)$, where $k=0, 1, 2\dots$.\\
+Second, using divide and conquer to find point where $f$ becomes non-positive. Since $f(n)$ is a stictly decreasing function, we can check the midle point $f(\frac{a+b}{2})$. If $f(\frac{a+b}{2})>=0$ recursively find the target point in $[\frac{a+b}{2}, b]$. Else, find our target point in $[a, \frac{a+b}{2}]$.\par
+\textbf{Time complexity:}\par
+In our first step, we only need to check $\lg n$ points, since we can evaluate $f$ at any $i$ in constant time, the time complexity of this step is $\Theta(\lg n)$.\par
+In our second step, we divide our initial problem into two sub-problems in constant time (by finding the middle point), and solve one of them. And there is no merge step. Thus, the time complexity of this step is $\Theta(\lg \frac{n}{2})$ where $\frac{n}{2}$ is the size of the interval we found.\\
+Conquently, the total time complexity of this algorithm is $\Theta(\lg n)$.\par
+\textbf{Correctness:}\par
+This algorithm terminates because we always calculate on a subproblem in smaller scale and will reach the base case finally. Each time we discard an interval, we are confident that $f(n)$ could not intersect with x-axis in that interval, becuase the value at both ends of the interbal are either both larger than zero or both smaller than zero and $f(n)$ is a strictly decreasing function.Thus, the target point (if has) must in the interval left.\par
+
+% problem 6
+\problem{6}
+\textbf{My algorithm:}\par
+First, we divide the initial problem into two sub-problems with input array $A[1..\frac{n}{2}]$ and $A[\frac{n}{2}+1..n]$ separately.\par 
+Then, we solve the sub-problems recursively (until reach the base case where the length of the input array is 1 and return the only element in the array as the solution) and get two solutions for the sub-problems.\par
+In the merge stage, we start with the element $A[\frac{n}{2}]$ and scan to the left until reach the first element and add them up. Record the maximum sum and minimum sum during the scan. We do the same thing to the right half and get the maximum and minimum sum in the right half. Add the maximum sums of the left and right half together. Add the minimum sums together as well. Calculate the square of the added maximum and minimum sum and pick the larger one.\par
+Finally, we compare the thress sums we get, and pick the largest one as the solution to the initial problem.\par
+\textbf{Time complexity:}\par
+In the divide stage, we split the initial problem into 2 subproblems in constant time. Each subproblem is half the size of the initial problem.\par
+In the merge stage, every element in the array is scaned once. Therefore, the merge stage takes linear time.\par
+Using the master method, we get that the time complexity of this algorithm is $\Theta(n\log n).$\par
+\textbf{Correctness:}\par
+This algorithm terminates becuase we always calculate on a subproblem in smaller scale and will reach the base case finally.\par
+After we spilt the problem into 2 subproblems, we will apply this algorithm to the subproblems (name them the left half and the right half) and we will get two solutions of the two subproblems. If we are lucky enough, the larger one of these two solutions would be the correct answer. If not, then the correct answer must be the subarray which spans from the left half to the right half. Our merge stage finds this result. Assume array $A[i, j]$ is the miximum sum which spans from left to right, and $k$ is the first element of the right half. $A[k, j]$ must be the miximum sum in the right half which starts at $k$. Otherwise, if there is $j'$ which makes $A[k, j']$ has larger sum than $A[k, j]$, then $A[i, j']$ would have larger sum than $A[i, j]$, which contradicts with the assumption. Same discuss applys to the left half.\par
+So, if the results returns from left half and right half are correct. The maximum value among the results from subproblems and the result we found which spans from left to right must be the correct. So, apply induction here, we can say that this algorithms is correct.\par
 \end{document}
