@@ -63,6 +63,15 @@ so that the problem of evaluating $A(x)$ at $\omega_n^0, \omega_n^1, \cdots, \om
 	\item evaluating the degree-bound $n/5$ polynomials $A^{[0]}(x)$, $A^{[1]}(x)$, $A^{[2]}(x)$, $A^{[3]}(x)$ and $A^{[4]}(x)$ at points $(\omega_n^0)^5$, $(\omega_n^1)^5$, $\cdots$, $(\omega_n^{n-1})^5$.
 	\item comboning the results according to equation (1).
 \end{enumerate}
+We can then extend the halving lemma,
+\lemma{1}\\
+If $n>0$ is multiple of 5, then the fifth power of the $n$ complex $n$th roots of unity are then $n/5$ complex $(n/5)$th root of unity. (Proof of this lemma is quite similar to the halving lemma, so I will not repeat here.)\par
+By the extended halving lemma above, each sub-problem consists not of $n$ distinct values but only of the $n/5$ complex $(n/5)$th roots of unity, with each root occurring exactly fifth. Therefore, we recursively evaluate the polynomials $A^{[0]}$ to $A^{[4]}$ of degree-bound $n/5$ at the $n/5$ complex $(n/5)$th root of unity. These sub-problems have exactly the same form as the original problem, but shrink the size by 5. We have now successfully divided an $n$-element DFT computation into five $n/5$ element DFT computations.\par
+Thus, we get the recurrence for the running time,
+\begin{align*}
+	T(n)&=5T(n/5)+\Theta(n)\\
+	&=\Theta(n\log n)
+\end{align*}
 
 % problem 2
 \problem{2}
@@ -94,13 +103,61 @@ Consequently, the total running time is $\Theta(n)+\Theta(n\log n)+\Theta(n)$, w
 
 % problem 3
 \problem{3}
+\begin{align*}
+	A(x)&=a_0+a_1x+a_2x^2+\cdots+a_{n-2}x^{n-2}+a_{n-1}x^{n-1}\\
+	\frac{A(x)}{x^{n-1}}&=\frac{a_0}{x^{n-1}}+\frac{a_1}{x^{n-2}}+\cdots+\frac{a_{n_2}}{x}+a_{n-1}\\
+	&=a_{n-1}+\frac{a_{n_2}}{x}+\cdots+\frac{a_1}{x^{n-2}}+\frac{a_0}{x^{n-1}}\\
+	&=A^{rev}(\frac{1}{x})
+\end{align*}
+Thus, we can get the point value representation for $A^{rev}(x)\{x'_i, y'_i\}$ from the point value representation for $A(x)\{x_i, y_i\}$ such that $x'_i=x_i$, $y'_i=\frac{y_i}{x^{n-1}}$.
 
 % problem 4
 \problem{4}
+\[T(n)=2T(\lfloor n/2\rfloor+\lceil\lg n\rceil)+n\]
+\[\because\lceil\lg n\rceil\cdot\lg^2n < n \text{, for all } n\geq1024\]
+\[\therefore|h(n)|=\lceil\lg n\rceil=O(\frac{n}{\log^2n})\]
+\[\because |g(n)|=n=O(n^1)\]
+We can apply Akra–Bazzi method.
+\begin{align*}
+	T(n)&=\Theta(n(1+\int_1^n\frac{u}{u^2}du))\\
+	&=\Theta(n(1+\log n))\\
+	&=\Theta(n\log n)
+\end{align*}
 
 % problem 5
 \problem{5}
+Given that we can solve $5\times5$ matrices multiplication in $k$ multiplications, we can conclude the recurrence,
+\[T(n)=kT(\frac{n}{5})+\Theta(n^2)\]
+Apply the master method, where $a=k$, $b^d=5^2=25$. We get
+\begin{enumerate}
+	\item If $k<25$, then $a<b^d$. Thus, $T(n)=\Theta(n^2)=O(n^{\lg7})$
+	\item If $k=25$, then $a=b^d$. Thus, $T(n)=\Theta(n^2\log n)=O(n^{\lg7})$
+	\item If $k>25$, then $a>b^d$. Thus, $T(n)=\Theta(n^{\log_5^k})$.\\
+		$\because T(n)=O(n^{\lg7})$\\
+		$\therefore k<5^{\lg7}=91.67$
+\end{enumerate}
+Therefore, the largest $k$ is 91, and the running time is $n^{2.81}$.
+
 
 % problem 6
 \problem{6}
+\begin{enumerate}[label=\arabic*.]
+	\item This algorithm use divide and conquer. We divid the input array into 2 half evenly. Then we recursively find the majority element in these two subproblems, and each will give back a candidate for the majority element of the initial input array.(If it exists, else it will return false.) If they return the same candidate, then it is the majority element of the input array. If two candidate elemet are different, then we will do a linear scan to determine which candidate is the majority element of the input array or neither of them is the majorty element. If either of them returns false, then we do a linear check to the only candidate element. If both of them returns false, them there is no majority element for the input array, just return false.\\
+		The can get the recurrence from the description above. We will divide the problem into 2 subproblems, and the input array size shrinks by 2 for each subproblem. The check stage (if necessary) do a linear scan. Thus,
+		\begin{align*}
+			T(n)&=2T(n/2)+\Theta(n)\\
+			&=\Theta(n\log n)
+		\end{align*}
+		The correctness of this algorithms is proofed as follows,
+		\begin{enumerate}
+			\item In each recurrence, the problem size is divided by 2, so the algorithm terminates.
+			\item In the base case, where the input size is 1. We just return the only element, and the result is correct.
+			\item Assume that for input size smaller than $n$, this algorithm is correct. Then for input size $n+1$, we will get at most two candidate element $e_0$ and $e_1$. According to the assumption, the candidate element we get is guaranteed to be the majority element on problem size $(n+1)/2$.\\
+				If we get two candidate elements and they are the same, then it must be the majorty element, because it at least occurs $\lceil (n+1)/2\rceil$ times. Same proof can be applyed to the scenario when we can not find a candidate.\\
+				If we get two candidate elements and they are different, then if the majority elemnt is exist, it must be one of them. Because if the majority element exist and is neither of the candidates, them this contradicts with the fact that the majority element is occured at least $\lceil (n+1)/2\rceil$ times. Same proof can be apply to the scenario when we get one candidate from the recurrence. The check stage will decide which one is the majority element or neither of them is the majority element.\\
+				Therefore, for input size $n+1$, this will always returns the correct result. According to induction, the algorithm is correct for all valid input.
+		\end{enumerate}
+	\item We can set a hash table to map a element to the frequency it occurs. Each bucket in the hash table is for a group of element which are regarded as equal and the mapping value is the frequency. We do a liear scan to every element in the input array, and each time we get a input element, we either add the frequency corresponding to this element in the hash table or have a new bucket for this element and set the frequency to 1. Then we scan the hash table, trying to find a bucket whose frequency is equal or larger than $\lceil n/2\rceil$. If we find one, than return the element, else return false.\\
+		The time complexity is $\Theta(n)$, becuase in the worse case where input element are different from each other, we do two scans and have $2n$ operations and in the best case where input element are equal to each other, we do one scans in each input elemnt and one scan on the hash table whose size is 1, so we have $n+1$ operations.\\
+\end{enumerate}
 \end{document}
