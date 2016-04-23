@@ -1,0 +1,106 @@
+\documentclass[12pt,letterpaper]{article}
+\usepackage{amsmath, amssymb}
+\usepackage{fullpage}
+\usepackage{amsmath}
+\usepackage{enumitem}
+\pagestyle{empty}
+\def\pp{\par\noindent}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\renewcommand{\baselinestretch}{1.2}
+\newcommand{\problem}[1]{ \bigskip \pp \textbf{Problem #1}\par}
+\newcommand{\solution}{\pp\textit{Solution:}\par}
+\newcommand{\answer}{\medskip\pp\textit{Answer:} }
+\newcommand{\lemma}[1]{\medskip\pp\textit{Lemma #1:}}
+\newcommand{\proof}{\medskip\pp\textit{Proof:}\par}
+\newcommand{\hint}[1] {\par{\footnotesize {\bf Hint:} #1}}
+\newcommand{\remark}[1]{\par{\footnotesize {\bf Remark:} #1}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\bbZ}    {\mathbb{Z}}
+\newcommand{\bbQ}    {\mathbb{Q}}
+\newcommand{\bbN}    {\mathbb{N}}
+\newcommand{\bbB}    {\mathbb{B}}
+\newcommand{\bbR}    {\mathbb{R}}
+\newcommand{\bbC}    {\mathbb{C}}
+\newcommand{\calP}   {{\cal{P}}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\DeclareMathOperator{\E}{E}
+\DeclareMathOperator{\Var}{Var}
+\DeclareMathOperator{\cov}{cov}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\centerline{\bf EECS 336}
+
+\medskip
+\centerline{Jiaju Ni}
+\centerline{Homework 3}
+\bigskip
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% problem 1
+\problem{1}
+Given that $n$ is a power of 5, we can use the cofficients of $A(x)$ to define five new polynomials $A^{[0]}(x)$, $A^{[1]}(x)$, $A^{[2]}(x)$, $A^{[3]}(x)$ and $A^{[4]}(x)$ of degree-bound $n/5$ such that:
+\begin{align*}
+	A^{[0]}(x)&=a_0+a_5x+a_{10}x^2+\cdots+a_{n-5}x^{n/5-1}\\
+	A^{[1]}(x)&=a_1+a_6x+a_{11}x^2+\cdots+a_{n-4}x^{n/5-1}\\
+	A^{[2]}(x)&=a_2+a_7x+a_{12}x^2+\cdots+a_{n-3}x^{n/5-1}\\
+	A^{[3]}(x)&=a_3+a_8x+a_{13}x^2+\cdots+a_{n-2}x^{n/5-1}\\
+	A^{[4]}(x)&=a_4+a_9x+a_{14}x^2+\cdots+a_{n-1}x^{n/5-1}\\
+\end{align*}
+It follows that
+\begin{equation}
+	A(x)=A^{[0]}(x^5)+xA^{[1]}(x^5)+x^2A^{[2]}(x^5)+x^3A^{[3]}(x^5)+x^4A^{[4]}(x^5)
+\end{equation}
+so that the problem of evaluating $A(x)$ at $\omega_n^0, \omega_n^1, \cdots, \omega_n^{n-1}$ reduces to 
+\begin{enumerate}
+	\item evaluating the degree-bound $n/5$ polynomials $A^{[0]}(x)$, $A^{[1]}(x)$, $A^{[2]}(x)$, $A^{[3]}(x)$ and $A^{[4]}(x)$ at points $(\omega_n^0)^5$, $(\omega_n^1)^5$, $\cdots$, $(\omega_n^{n-1})^5$.
+	\item comboning the results according to equation (1).
+\end{enumerate}
+
+% problem 2
+\problem{2}
+Create three new vectors $X'$, $Y'$ and $Z'$ such that,
+\[X'[i]=
+\begin{cases}
+	1, \text{if } i\in X,\\
+	0, \text{if } i\notin X.\\
+\end{cases}
+\]
+\[Y'[i]=
+\begin{cases}
+	1, \text{if } i\in Y,\\
+	0, \text{if } i\notin Y.\\
+\end{cases}
+\]
+and
+\[Z'[i]=
+\begin{cases}
+	1, \text{if } i\in Z,\\
+	0, \text{if } i\notin Z.\\
+\end{cases}
+\]
+The length of $X'$, $Y'$ and $Z'$ are all $10n$, so $i\in [0, 10n]$.\par
+We first compute the Cartesian Sum of $X$ and $Y$. If we use the elements of $X'$ and $Y'$ as the coefficients of polynomials $p(x)$ and $q(x)$, we can compute the product of $p(x)q(x)$ in $n\log n$ time using FFT and get an array $T'$ whose length is $20n$ and $T'[i]=\sum\limits_jp_jq_{i-j}$ which is the number of times $i$ is realized as a sum of elements in $X$ and $Y$.\par
+We then compute the Cartesian Sum of $T$ and $Z$ in the same approach, and get the result $C'$ and convert it back to $C$.\par
+The time complexity of creating $X'$, $Y'$ and $Z'$ is $10n$ each, which is $\Theta(n)$. The time complexity of FFT is $\Theta(n\log n)$. We do this operation twice, and the input size is $10n$ and $20n$ separately. So the time complexity is still $\Theta(n\log n)$. In the last step, we do a linear scan of $C'$ and get the result $C$.\par
+Consequently, the total running time is $\Theta(n)+\Theta(n\log n)+\Theta(n)$, which is $\Theta(n\log n)$.
+
+% problem 3
+\problem{3}
+
+% problem 4
+\problem{4}
+
+% problem 5
+\problem{5}
+
+% problem 6
+\problem{6}
+\end{document}
