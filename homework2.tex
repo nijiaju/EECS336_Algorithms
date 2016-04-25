@@ -3,6 +3,7 @@
 \usepackage{fullpage}
 \usepackage{amsmath}
 \usepackage{enumitem}
+\usepackage{mathtools}
 \pagestyle{empty}
 \def\pp{\par\noindent}
 
@@ -128,6 +129,19 @@ We have case 2, $x=\alpha$. Consequently, the solution is $S(m)=\Theta(m^2(\log 
 
 % problem 4
 \problem{4}
+\textbf{My algorithm:}\par
+Given five input arrays $A, B, C, D, E$, and they each containing $n_A, n_B, n_C, n_D, n_E$ numbers. Find the number at the middle point of each array (if the number of numebrs in an array is an odd numeber, then just use $\lceil n/2\rceil$ or $\lfloor n/2\rfloor$).\par
+Find the maximum value among these five medians as well as the minimum value. Name the maximum value $m_{max}$, the minimum value $m_{min}$. Also name the array contains the maximum value $X_{max}$, and the array contains the minimum value $X_{min}$. In array $X_{min}$, we say there are $n_{min}$ values that is smaller than $m_{min}$.(Whether or not include $m_{min}$ depends on which operation is used, ceiling or floor.) (In other wrods, this is the number of numbers at the left side of $m_{min}$). In array $X_{max}$, name the number of values that is larger than $m_{max}$ $n_{max}$.\par
+Discard $min(n_{min}, n_{max})$ numbers at the head of array $X_{min}$ and the same amount of numbers at the tail of array $X_{max}$.\par
+Thus, we have a sub-problem which smaller in the size of input data. Recursively solve the subproblems, until there are one or two numbers left. (Depending on the size of input data.)\par
+If there is only one element left in an array, and this element is $m_{max}$ or $m_{min}$ then discard it.\par
+\textbf{Time complexity:}\par
+In the worst case, we have to do $\lg n$ iterations to discard a whole array. So, the total number of iterations it needs to find the median is less than $5\lg n$ (where $n=max(n_A, n_B, n_C, n_D, n_E)$).\par
+We can get the length of each array and find its middle point in contant time. (for example, we are using a vector or array to store the data.) Also, we can find the maximum and minimum value of 5 numbers in constant time. Therefore, the time complexity of doing one iteration is $\Theta(1)$. So the running time of the whole algorithm is $\Theta(\lg n)$.
+\textbf{Correctness:}\par
+First, this algorithm terminates becuase we always do recursion on a subproblem smaller in input size.\par
+Second, in each iteration we discard some numbers. We are guaranteed that the median is never in the elements we discarded. To prove that, we assume that the median is in the discarded numbers which are smaller than $m_{min}$. As the median is smaller than $m_{min}$, it must be smaller than numbers in the right half of $X_{min}$. As $m_{min}$ is the smallest among all of the middle points of arrays, the median must be smaller than all of the numers in the right half of other arrays. So the median is smaller than at least half of the numbers which contradicts with the definition of median. So, it is not possible to be discarded.\par
+As the median could never be discarded, then the number(s) left is the right answer. The algorithm is correct.\par
 
 % problem 5
 \problem{5}
@@ -146,12 +160,12 @@ This algorithm terminates because we always calculate on a subproblem in smaller
 \textbf{My algorithm:}\par
 First, we divide the initial problem into two sub-problems with input array $A[1..\frac{n}{2}]$ and $A[\frac{n}{2}+1..n]$ separately.\par 
 Then, we solve the sub-problems recursively (until reach the base case where the length of the input array is 1 and return the only element in the array as the solution) and get two solutions for the sub-problems.\par
-In the merge stage, we start with the element $A[\frac{n}{2}]$ and scan to the left until reach the first element and add them up. Record the maximum sum and minimum sum during the scan. We do the same thing to the right half and get the maximum and minimum sum in the right half. Add the maximum sums of the left and right half together. Add the minimum sums together as well. Calculate the square of the added maximum and minimum sum and pick the larger one.\par
-Finally, we compare the thress sums we get, and pick the largest one as the solution to the initial problem.\par
+Then, we start with the element $A[\frac{n}{2}]$ and scan to the left until reach the first element and add them up. Record the maximum sum and minimum sum during the scan. We do the same thing to the right half and get the maximum and minimum sum in the right half. Add the maximum sums of the left and right half together. Add the minimum sums together as well. Calculate the square of the added maximum and minimum sum and pick the larger one.\par
+Finally, we compare the three sums we get, and pick the largest one as the solution to the initial problem.\par
 \textbf{Time complexity:}\par
-In the divide stage, we split the initial problem into 2 subproblems in constant time. Each subproblem is half the size of the initial problem.\par
+ we split the initial problem into 2 subproblems in constant time. Each subproblem is half the size of the initial problem.\par
 In the merge stage, every element in the array is scaned once. Therefore, the merge stage takes linear time.\par
-Using the master method, we get that the time complexity of this algorithm is $\Theta(n\log n).$\par
+Applying the master method, we get that the time complexity of this algorithm is $\Theta(n\log n).$\par
 \textbf{Correctness:}\par
 This algorithm terminates becuase we always calculate on a subproblem in smaller scale and will reach the base case finally.\par
 After we spilt the problem into 2 subproblems, we will apply this algorithm to the subproblems (name them the left half and the right half) and we will get two solutions of the two subproblems. If we are lucky enough, the larger one of these two solutions would be the correct answer. If not, then the correct answer must be the subarray which spans from the left half to the right half. Our merge stage finds this result. Assume array $A[i, j]$ is the miximum sum which spans from left to right, and $k$ is the first element of the right half. $A[k, j]$ must be the miximum sum in the right half which starts at $k$. Otherwise, if there is $j'$ which makes $A[k, j']$ has larger sum than $A[k, j]$, then $A[i, j']$ would have larger sum than $A[i, j]$, which contradicts with the assumption. Same discuss applys to the left half.\par
