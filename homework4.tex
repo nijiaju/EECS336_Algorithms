@@ -1,0 +1,153 @@
+\documentclass[12pt,letterpaper]{article}
+\usepackage{amsmath, amssymb}
+\usepackage{fullpage}
+\usepackage{enumitem}
+\pagestyle{empty}
+\def\pp{\par\noindent}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\renewcommand{\baselinestretch}{1.2}
+\newcommand{\problem}[1]{ \bigskip \pp \textbf{Problem #1}\par}
+\newcommand{\solution}{\pp\textit{Solution:}\par}
+\newcommand{\answer}{\medskip\pp\textit{Answer:} }
+\newcommand{\lemma}[1]{\medskip\pp\textit{Lemma #1:}}
+\newcommand{\proof}{\medskip\pp\textit{Proof:}\par}
+\newcommand{\hint}[1] {\par{\footnotesize {\bf Hint:} #1}}
+\newcommand{\remark}[1]{\par{\footnotesize {\bf Remark:} #1}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\bbZ}    {\mathbb{Z}}
+\newcommand{\bbQ}    {\mathbb{Q}}
+\newcommand{\bbN}    {\mathbb{N}}
+\newcommand{\bbB}    {\mathbb{B}}
+\newcommand{\bbR}    {\mathbb{R}}
+\newcommand{\bbC}    {\mathbb{C}}
+\newcommand{\calP}   {{\cal{P}}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\DeclareMathOperator{\E}{E}
+\DeclareMathOperator{\Var}{Var}
+\DeclareMathOperator{\cov}{cov}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\centerline{\bf EECS 336}
+
+\medskip
+\centerline{Jiaju Ni}
+\centerline{Homework 4}
+\bigskip
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% problem 1
+\problem{1}
+The greedy algorithm for the longest common subsequence problem proposed in the paper is not correct. This greedy algorithm always pick the symbol that comes earlier in string Y. They claim that it leaves as much opportunity as possible for the remaining symbols to be selected.\par
+However, this is not always the case. There are cases that the shorted-sighted greedy strategy will mistakenly discard the correct answer. For example, given two input array,
+\[X[A, B, C, D]\]
+\[Y[B, A, B, C]\]
+In the first iteration, the greedy algorithm will discard $A$ beacuse the occurence of $B$ is earlier in array $Y$. Thus, it will return array $[B, C]$ as the longest common subsequence. However, the correct longest common subsequence is $[A, B, C]$.
+
+% problem 2
+\problem{2}
+The two cost models will always produce the same optimal tree. The cost models share the same recursion equation. Their base case are slightly different.
+\begin{enumerate}
+	\item For the cost model in class, the base case is $T(i,i)=q_{i-1}+p_i+q_i$
+	\item For the cost model in text book, the base case is $T(i,i)=2q_{i-1}+p_i+2q_i$
+\end{enumerate}
+
+% problem 3
+\problem{3}
+\noindent\textbf{Shortest Maximum-Weight Common Subsequence Problem:}\par
+The dynamic programming algorithm for this problem uses 2 tables, $L[i, j]$ and $W[i, j]$, the length and the weight of the shortest maximum-weight common subsequence of input array $X[1..i]$ and $Y[1..j]$ $(i\in[0,m], i\in[0,n])$.\par
+It has two base cases.
+\[
+	\begin{cases}
+		\text{if } i=0, \text{ then } L(0,j)=0, W(0,j)=0\\
+		\text{if } j=0, \text{ then } L(i,0)=0, W(i,0)=0\\
+	\end{cases}
+\]\par
+It has two recursion cases.
+\[
+	\begin{cases}
+		\text{if } x_i=y_i, \text{ then } L(i,j)=1+L(i-1, j-1), W(i,j)=w_i+W(i-1, j-1)\\
+		\text{if } x_i\neq y_i, \text{ then } 
+		\begin{cases}
+			\text{if } W(i-1,j) > W(i,j-1),\\
+			\text{then } W(i,j)=W(i-1,j), L(i,j)=L(i-1,j)\\
+			\text{if } W(i,j-1) > W(i-1,j),\\
+			\text{then } W(i,j)=W(i,j-1), L(i,j)=L(i,j-1)\\
+			\text{if } W(i-1,j) = W(i,j-1),\\
+			\text{then } W(i,j)=W(i-1,j), L(i,j)=\text{min}(L(i-1,j), L(i,j-1)\\
+		\end{cases}
+	\end{cases}
+\]\par
+\medskip\noindent\textit{Time Complexity}\par
+Its time complexity is $O(mn)$, because it creates 2 $m\times n$ tables and each entry of these tables can be calculated in constant time.\par
+\medskip\noindent\textit{Correctness}\par
+\medskip
+\noindent\textbf{Minimum-Weight Longest Common Subsequence Problem:}\par
+The dynamic programming algorithm for this problem uses 2 tables, $L[i, j]$ and $W[i, j]$, the length and the weight of the shortest maximum-weight common subsequence of input array $X[1..i]$ and $Y[1..j]$ $(i\in[0,m], i\in[0,n])$.\par
+It has two base cases.
+\[
+	\begin{cases}
+		\text{if } i=0, \text{ then } L(0,j)=0, W(0,j)=0\\
+		\text{if } j=0, \text{ then } L(i,0)=0, W(i,0)=0\\
+	\end{cases}
+\]\par
+It has two recursion cases.
+\[
+	\begin{cases}
+		\text{if } x_i=y_i, \text{ then } L(i,j)=1+L(i-1, j-1), W(i,j)=w_i+W(i-1, j-1)\\
+		\text{if } x_i\neq y_i, \text{ then } 
+		\begin{cases}
+			\text{if } L(i-1,j) > L(i,j-1),\\
+			\text{then } L(i,j)=W(i-1,j), W(i,j)=L(i-1,j)\\
+			\text{if } L(i,j-1) > L(i-1,j),\\
+			\text{then } L(i,j)=L(i,j-1), W(i,j)=W(i,j-1)\\
+			\text{if } L(i-1,j) = L(i,j-1),\\
+			\text{then } L(i,j)=L(i-1,j), W(i,j)=\min(W(i-1,j), W(i,j-1)\\
+		\end{cases}
+	\end{cases}
+\]\par
+\medskip\noindent\textit{Time Complexity}\par
+Its time complexity is $O(mn)$, because it creates 2 $m\times n$ tables and each entry of these tables can be calculated in constant time.\par
+\medskip\noindent\textit{Correctness}\par
+
+% problem 4
+\problem{4}
+The dynamic programming algorithm for this problem uses an array $C[i]$ which is the total cost from the starting point (post 1) to post $i$ $(i\in[1,n])$.\par
+It has one base cases.
+\[
+	C(1)=0
+\]\par
+Its recusion case is as follows.
+\[
+	C(i)=\underset{1\leq k\leq i}{\min}(C(k)+f(k,i))
+\]\par
+\medskip\noindent\textit{Time Complexity}\par
+Its time complexity is $O(n^2)$, as we have an array with $n$ elements and we can get the value of each element in at most $n$ operations.\par
+\medskip\noindent\textit{Correctness}\par
+I'll first prove the correctness of another dynamic programming algorithm for this problem.\par
+Let table $C[i, j]$ be the table of minimum costs from post $i$ to post $j$ $(i\in[1,n], j\in[1,n], i\leq j)$. Its base case is straightforward. If $i=j$, then $C(i, j)=0$. Its recursion case is
+\[
+	C(i,j)=\underset{i\leq k\leq j}{\min}(C(i,k)+C(k,j))
+\]\par
+The correctness of this dynamic programming algorithm is straight forward. if we already have the minimum cost of $C(i,k)$ and $C(k,j)$ $(k\in[i,j])$, then the minimum cost of $C(i,j)$ must be the smallest one among all the sums $C(i,k)+C(k,j)$, because we only have so many possibilities to travel from $i$ to $j$.\par
+This algorithm is not efficient in time and space. It has done replicate works in finding the minimum cost.\par
+We know that if $(p, q)$ is in the minimum cost path from $i$ to $j$ ($P_{i,j}$) $(1\leq i\leq p\leq q \leq j\leq n)$, then it must be in the minimum cost path from $i$ to $q$ ($P_{i,q}$). Otherwise, assume we have another minimum cost path $P_{i,q}'$ from $i$ to $q$ that do not contain $(p,q)$, then we can get a new minimum cost path from $i$ to $j$ which does not contain $(p,q)$ via concatenating $P_{i,j}'$ and $P_{q,j}$. This result contradicts with the precondition.\par
+Therefore, we only need to check $C(1,k)+f(k,j)$ for all possible $k$ when finding the minimum cost $C(j)$. Other possible paths from $k$ to $j$ will be checked in other recursion cases. For exmaple, if $(p,q)$ is in a path from $k$ to $j$, as $q$ is less or equal than $j$, we will have it checked when calculating $C(q)$.\par
+Assume we have a series of minimum costs $C(1)..C(i)$. Then $C(i+1)=\underset{1\leq k\leq i}{\min}(C(k)+f(k,i+1))$. For each interval $[p,q]$ in $[k,i+1]$, there will be two cases.
+\begin{enumerate}
+	\item if $q<i+1$, then it will be checked in $C(q)$, and it will contribute to $C(q)$ if and only if it is in the minimum cost path from $1$ to $q$.\\
+	\item if $q=i+1$, then it will be checked in this iteration, and it will contribute to $C(i+1)$ if $C(q)+f(q,i)$ is minimum value among all valid $q$. Thus, it must be the minimum value from $1$ to $i+1$.\\
+\end{enumerate}
+The base case is apprantly correct. Apply induction to this and we can conlcude that $C(n)$ must be the minimum cost from $1$ to $n$.
+
+% problem 5
+\problem{5}
+
+\end{document}
