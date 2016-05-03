@@ -53,11 +53,26 @@ In the first iteration, the greedy algorithm will discard $A$ beacuse the occure
 
 % problem 2
 \problem{2}
-The two cost models will always produce the same optimal tree. The cost models share the same recursion equation. Their base case are slightly different.
+The two cost models will always produce the same optimal tree. Their recursion cases are identical.
+\[
+	C(i,j)=\underset{i\leq k\leq j}{\min}\left\{C(i,k-1)+C(k+1,j)+\sum_{m=i}^jp_m+\sum_{m=i-1}^jq_m\right\}
+\]
+Their base cases are slightly different.
 \begin{enumerate}
-	\item For the cost model in class, the base case is $T(i,i)=q_{i-1}+p_i+q_i$
-	\item For the cost model in text book, the base case is $T(i,i)=2q_{i-1}+p_i+2q_i$
+	\item For the cost model in class, the base case is $C(i,i)=q_{i-1}+p_i+q_i$
+	\item For the cost model in text book, the base case is $C(i,i)=2q_{i-1}+p_i+2q_i$
 \end{enumerate}
+Let $C_1(i,j)$ be the cost model in class and $C_2(i,j)$ be the cost model in text book. We can get
+\[
+	C_2(i,j)-C_1(i,j)=\sum_{m=i}^jq_m
+\]
+Let $k^*$ be the optimal point that minimize $C_1(i,j)$. We can get for any $k\in[i,j]$,
+\begin{align*}
+	C_1(i,k-1)+C_1(k,j)&\geq C_1(i,k^*-1)+C_1(k^*,j)\\
+	\Leftrightarrow C_1(i,k-1)+\sum_{m=i}^{k-1}q_m+C_1(k,j)+\sum_{m=k}^jq_m&\geq C_1(i,k^*-1)+\sum_{m=i}^{k-1}q_m+C_1(k,j)+\sum_{m=k}^jq_m\\
+	\Leftrightarrow C_2(i,k-1)+C_2(k,j)&\geq C_2(i,k^*-1)+C_2(k^*,j)\\
+\end{align*}
+$k^*$ is also the optimal point that minimize $C_2(i,j)$. Consequently, the two cost models always produce the same optimal tree.	
 
 % problem 3
 \problem{3}
@@ -81,13 +96,15 @@ It has two recursion cases.
 			\text{if } W(i,j-1) > W(i-1,j),\\
 			\text{then } W(i,j)=W(i,j-1), L(i,j)=L(i,j-1)\\
 			\text{if } W(i-1,j) = W(i,j-1),\\
-			\text{then } W(i,j)=W(i-1,j), L(i,j)=\text{min}(L(i-1,j), L(i,j-1)\\
+			\text{then } W(i,j)=W(i-1,j), L(i,j)=\text{min}\left\{L(i-1,j), L(i,j-1)\right\}\\
 		\end{cases}
 	\end{cases}
 \]\par
 \medskip\noindent\textit{Time Complexity}\par
 Its time complexity is $O(mn)$, because it creates 2 $m\times n$ tables and each entry of these tables can be calculated in constant time.\par
 \medskip\noindent\textit{Correctness}\par
+In the case where $x_i=y_j$, this symbol must be the part of the result. Otherwise, we could get a larger weight common sequence by adding $x_i$ to the result we get.(Weights are positive.)\par
+In the case where $x_i\neq y_j$, we first compare $W$. And we compare $L$ only when the result of comparing $W$ is equal. This guarantees that we will have a largest weight common subsequence. And get a shortest one among all the largest weight common subsequence results.\par
 \medskip
 \noindent\textbf{Minimum-Weight Longest Common Subsequence Problem:}\par
 The dynamic programming algorithm for this problem uses 2 tables, $L[i, j]$ and $W[i, j]$, the length and the weight of the shortest maximum-weight common subsequence of input array $X[1..i]$ and $Y[1..j]$ $(i\in[0,m], i\in[0,n])$.\par
@@ -101,21 +118,23 @@ It has two base cases.
 It has two recursion cases.
 \[
 	\begin{cases}
-		\text{if } x_i=y_i, \text{ then } L(i,j)=1+L(i-1, j-1), W(i,j)=w_i+W(i-1, j-1)\\
-		\text{if } x_i\neq y_i, \text{ then } 
+		\text{if } x_i=y_j, \text{ then } L(i,j)=1+L(i-1, j-1), W(i,j)=w_i+W(i-1, j-1)\\
+		\text{if } x_i\neq y_j, \text{ then } 
 		\begin{cases}
 			\text{if } L(i-1,j) > L(i,j-1),\\
 			\text{then } L(i,j)=W(i-1,j), W(i,j)=L(i-1,j)\\
 			\text{if } L(i,j-1) > L(i-1,j),\\
 			\text{then } L(i,j)=L(i,j-1), W(i,j)=W(i,j-1)\\
 			\text{if } L(i-1,j) = L(i,j-1),\\
-			\text{then } L(i,j)=L(i-1,j), W(i,j)=\min(W(i-1,j), W(i,j-1)\\
+			\text{then } L(i,j)=L(i-1,j), W(i,j)=\min\left\{W(i-1,j), W(i,j-1)\right\}\\
 		\end{cases}
 	\end{cases}
 \]\par
 \medskip\noindent\textit{Time Complexity}\par
 Its time complexity is $O(mn)$, because it creates 2 $m\times n$ tables and each entry of these tables can be calculated in constant time.\par
 \medskip\noindent\textit{Correctness}\par
+In the case where $x_i=y_j$, this symbol must be the part of the result. Otherwise, we could get a longer common sequence by adding $x_i$ to the result we get.\par
+In the case where $x_i\neq y_j$, we first compare $L$. And we compare $W$ only when the result of comparing $L$ is equal. This guarantees that we will have a longest common subsequence. And get a minimum-weight one among all the longest common subsequence results.\par
 
 % problem 4
 \problem{4}
@@ -149,5 +168,37 @@ The base case is apprantly correct. Apply induction to this and we can conlcude 
 
 % problem 5
 \problem{5}
-
+First of all, we need to sort the points by their x-coordinate. And the discussion below assume that the points are sorted.\par
+\medskip\noindent\textit{Table}\par
+The dynameic programming algorithm for this problem uses an array $S[i]$ to denote the distance of shortest 4-tonic tour from point 1 (the leftmost point) to point $i$, an table $X[j,k,l]$ to denote the distance of optimal tour with the choisen pivot $j$, $k$ and $l$. (The starting point will always be 1. The range of $i$, $j$ and $k$ are $[1,n]$. Only the entries that satifies $j>k$ and $k<l$ and $(j=n$ or $l=n)$ has distance of optimal 4-tomic tour. The entries that satifies $(j<k<l$ and $l=n)$ or $(j>k>l$ and $j=n)$ or $(j<k$ and $l<k$ and $k=n)$ will have distanc of optimal bitonic tour. Other entries will denote it is invalid.)\par
+\medskip\noindent\textit{Base Case}\par
+The number of points given should be larger or euqal than 4. And $S[4]=d(1,3)+d(3,2)+d(2,4)+d(4,1)$, $X[i,j,k]=d(1,j)+d(j,k)+d(k,l)+d(l,1)$ for every combination of $i$, $j$, $k$ that is valid.\par
+\medskip\noindent\textit{Recursion Case}\par
+Given that we have array $S$ and table $X$ for n points, then we can calculate $S[n+1]$ and $X$ for $n+1$ points as following.\par
+For every valid $n+1$ point 4-tonic tour entry in $X$ who is still a valid 4-tonic tour after replace $n+1$ with $n$, calculate its value via $n$ point 4-tonic tour value. For example, assume $X(j,k,n+1)$ and $X(j,k,n)$ are two valid 4-tonic tour representations,
+\begin{align*}
+	X(j,k,n+1)=\min
+	\begin{cases}
+		X(j,k,n)+d(n,n+1)+d(1,n+1)-d(1,n)\\
+		X(j,k,n)+d(n,n+1)+d(k,n+1)-d(k,n)\\
+		X(j,k,n)+d(j,n+1)+d(k,n+1)-d(j,k)\\
+		X(j,k,n)+d(j,n+1)+d(1,n+1)-d(1,j)\\
+	\end{cases}
+\end{align*}\par
+For every valid $n+1$ point 4-tonic tour entry in $X$ who have both $n$ and $n+1$ in its index, (we can get a 4-tonic tour by adding a point to a bitonic tour.) get the optimal bitonic tour after removing point $n+1$ and then calculate the optimal 4-tonic tour distance. For example, assume $X(n, k, n+1)$ is a valid 4-tonic tour representation,
+\[
+	x=\min_{m=2}^{n-1}\left\{X(m,n,k)\right\}
+\]
+Denote the point that minimize $x$ to be $j$. Then we can get the value of $X(n,k,n+1)$.
+\[
+	X(n,k,n+1)=\min
+	\begin{cases}
+		x+d(k,n+1)+d(k-1, n+1)-d(k,k-1)\\
+		x+d(j,n+1)+d(j+1, n+1)-d(j,j+1)\\
+	\end{cases}
+\]\par
+Finally update $S(n+1)$ with the minimum 4-tonic tour value we get in this iteration.\par
+For every valid $n+1$ bitonic tour entry in $X$, just follow the bitonic tour recursion case.\par
+\medskip\noindent\textit{Time Complexity}\par
+Each iteraiont we should check $3n^2+3n+1$ entries and in the worst case we need $O(n)$ operations. Thus the time complexity is $O(n^4)$.\par
 \end{document}
