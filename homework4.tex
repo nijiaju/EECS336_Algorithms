@@ -170,35 +170,47 @@ The base case is apprantly correct. Apply induction to this and we can conlcude 
 \problem{5}
 First of all, we need to sort the points by their x-coordinate. And the discussion below assume that the points are sorted.\par
 \medskip\noindent\textit{Table}\par
-The dynameic programming algorithm for this problem uses an array $S[i]$ to denote the distance of shortest 4-tonic tour from point 1 (the leftmost point) to point $i$, an table $X[j,k,l]$ to denote the distance of optimal tour with the choisen pivot $j$, $k$ and $l$. (The starting point will always be 1. The range of $i$, $j$ and $k$ are $[1,n]$. Only the entries that satifies $j>k$ and $k<l$ and $(j=n$ or $l=n)$ has distance of optimal 4-tomic tour. The entries that satifies $(j<k<l$ and $l=n)$ or $(j>k>l$ and $j=n)$ or $(j<k$ and $l<k$ and $k=n)$ will have distanc of optimal bitonic tour. Other entries will denote it is invalid.)\par
+In the 4-tonic tour problem, there are 4 pivot points, one of them is point $1$, on of them is point $N$. Denote the other two pivot points $a$ and $b$ respectively. The dynameic programming algorithm for this problem uses an table $X[i,j,k,l]$ to denote the minimum sum of four paths. For any fixed points $a$ and $b$, these paths are path $1$ to $i$, path $1$ to $j$, path $a$ to $k$ and path $a$ to $l$.\par
+This is a $n\times n\times n\times n$ table. We initialize each entry in this table to be positive infinity.\par
 \medskip\noindent\textit{Base Case}\par
-The number of points given should be larger or euqal than 4. And $S[4]=d(1,3)+d(3,2)+d(2,4)+d(4,1)$, $X[i,j,k]=d(1,j)+d(j,k)+d(k,l)+d(l,1)$ for every combination of $i$, $j$, $k$ that is valid.\par
+For any fixed point $a$ and $b$, $X[1,1,a,a]=0$.\par
 \medskip\noindent\textit{Recursion Case}\par
-Given that we have array $S$ and table $X$ for n points, then we can calculate $S[n+1]$ and $X$ for $n+1$ points as following.\par
-For every valid $n+1$ point 4-tonic tour entry in $X$ who is still a valid 4-tonic tour after replace $n+1$ with $n$, calculate its value via $n$ point 4-tonic tour value. For example, assume $X(j,k,n+1)$ and $X(j,k,n)$ are two valid 4-tonic tour representations,
-\begin{align*}
-	X(j,k,n+1)=\min
-	\begin{cases}
-		X(j,k,n)+d(n,n+1)+d(1,n+1)-d(1,n)\\
-		X(j,k,n)+d(n,n+1)+d(k,n+1)-d(k,n)\\
-		X(j,k,n)+d(j,n+1)+d(k,n+1)-d(j,k)\\
-		X(j,k,n)+d(j,n+1)+d(1,n+1)-d(1,j)\\
-	\end{cases}
-\end{align*}\par
-For every valid $n+1$ point 4-tonic tour entry in $X$ who have both $n$ and $n+1$ in its index, (we can get a 4-tonic tour by adding a point to a bitonic tour.) get the optimal bitonic tour after removing point $n+1$ and then calculate the optimal 4-tonic tour distance. For example, assume $X(n, k, n+1)$ is a valid 4-tonic tour representation,
-\[
-	x=\min_{m=2}^{n-1}\left\{X(m,n,k)\right\}
-\]
-Denote the point that minimize $x$ to be $j$. Then we can get the value of $X(n,k,n+1)$.
-\[
-	X(n,k,n+1)=\min
-	\begin{cases}
-		x+d(k,n+1)+d(k-1, n+1)-d(k,k-1)\\
-		x+d(j,n+1)+d(j+1, n+1)-d(j,j+1)\\
-	\end{cases}
-\]\par
-Finally update $S(n+1)$ with the minimum 4-tonic tour value we get in this iteration.\par
-For every valid $n+1$ bitonic tour entry in $X$, just follow the bitonic tour recursion case.\par
+For any fixed point $a$, $b$ and $n$, let $p$ be the next point that will be added into current paths. ($p\in(1, n), p\neq a, p\neq b$).\par
+\begin{enumerate}
+	\item If $1<p<a$, then $p$ must be $1+\max\left\{i,j\right\}$. Update the table by following equations.
+		\begin{align*}
+			X(p,j,a,a)&=\min\left\{X(i,j,a,a)+d(p,i), X(p,j,a,a)\right\}\\
+			X(i,p,a,a)&=\min\left\{X(i,j,a,a)+d(p,j), X(p,j,a,a)\right\}\\
+		\end{align*}
+	\item If $a<p<b$, then $p$ must be $1+\max\left\{i,j,k,l\right\}$. Update the table by follwing equations.
+		\begin{align*}
+			X(p,j,k,l)&=\min\left\{X(i,j,k,l)+d(p,i), X(p,j,k,l)\right\}\\
+			X(i,p,k,l)&=\min\left\{X(i,j,k,l)+d(p,j), X(i,p,k,l)\right\}\\
+			X(i,j,p,l)&=\min\left\{X(i,j,k,l)+d(p,k), X(i,j,p,l)\right\}\\
+			X(i,j,k,p)&=\min\left\{X(i,j,k,l)+d(p,l), X(i,j,k,p)\right\}\\
+		\end{align*}
+	\item if $p=b$, then update the table by following equations.
+		\begin{align*}
+			X(i,b,k,b)&=\min\left\{X(i,j,k,l)+d(b,j)+d(b,l),X(i,b,k,b)\right\}\\
+			X(i,b,b,l)&=\min\left\{X(i,j,k,l)+d(b,j)+d(b,k),X(i,b,b,l)\right\}\\
+			X(b,j,b,l)&=\min\left\{X(i,j,k,l)+d(b,i)+d(b,k),X(b,j,b,l)\right\}\\
+			X(b,j,k,b)&=\min\left\{X(i,j,k,l)+d(b,i)+d(b,l),X(b,j,k,b)\right\}\\
+		\end{align*}
+	\item if $b<p<n$, then $p$ must be $1+\max\left\{j,l\right\}$. Update the table by following equations.
+		\begin{align*}
+			X(b,j,b,p)&=\min\left\{X(b,j,b,l)+d(p,l),X(b,j,b,l)\right\}\\
+			X(b,p,b,l)&=\min\left\{X(b,j,b,l)+d(p,j),X(b,j,b,l)\right\}\\
+		\end{align*}
+	\item if $p=n$, then update the table by following equations.
+		\begin{align*}
+			X(b,n,b,n)=\min\left\{X(b,j,b,l)+d(j,n)+d(l,n), X(b,n,b,n)\right\}\\
+		\end{align*}
+\end{enumerate}
 \medskip\noindent\textit{Time Complexity}\par
-Each iteraiont we should check $3n^2+3n+1$ entries and in the worst case we need $O(n)$ operations. Thus the time complexity is $O(n^4)$.\par
+For every fixed $a$, $b$ and $n$, we add new point $p$ from $2$ to $n-1$. For each $p$, the recursion case takes constant time. So, the time complexity for each fixed $a$, $b$ and $n$ is $O(n)$.\par
+As $a\in(1,n-1)$, $b\in(2,n)$ and $n\in[4,N]$, we can see there are three for loops here and each loop has less than $N$ iterations. Therefore, the total time complexity is $O(n^4)$.\par
+\medskip\noindent\textit{Correctness}\par
+We split a 4-tonic tour into 4 paths by the pivots $1$, $a$, $b$ and $n$. For each new rightmost point $p$, it must be add into one of the four paths. According to the recursion case, we can get the minimum sum of the paths with the given fix points.\par
+In order to get the minimum value among all $a$, $b$ and $n$, we must also compare it with the historical minimum sum calculated by other combinations of fix pivot points.\par
+Thus, we can guaranteed that the final result $\min_{i=1}^N\left\{X(i,N,i,N)\right\}$ must be the minimum 4-tonic tour among all possible pivot points.\par
 \end{document}
