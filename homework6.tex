@@ -1,0 +1,128 @@
+\documentclass[12pt,letterpaper]{article}
+\usepackage{amsmath, amssymb}
+\usepackage{fullpage}
+\usepackage{enumitem}
+\usepackage{algorithmic}
+\pagestyle{empty}
+\def\pp{\par\noindent}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\renewcommand{\baselinestretch}{1.2}
+\newcommand{\problem}[1]{ \bigskip \pp \textbf{Problem #1}\par}
+\newcommand{\solution}{\medskip\pp\textit{Solution:}\par}
+\newcommand{\answer}{\medskip\pp\textit{Answer:} }
+\newcommand{\lemma}[1]{\pp\textbf{\textit{Lemma #1:}}}
+\newcommand{\proof}{\pp\textbf{\textit{Proof: }}}
+\newcommand{\hint}[1] {\par{\footnotesize {\bf Hint:} #1}}
+\newcommand{\remark}[1]{\par{\footnotesize {\bf Remark:} #1}}
+\newcommand{\correctness}{\medskip\pp\textit{Correctness:}\par}
+\newcommand{\timecomplexity}{\medskip\pp\textit{Time Complicity:}\par}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\bbZ}    {\mathbb{Z}}
+\newcommand{\bbQ}    {\mathbb{Q}}
+\newcommand{\bbN}    {\mathbb{N}}
+\newcommand{\bbB}    {\mathbb{B}}
+\newcommand{\bbR}    {\mathbb{R}}
+\newcommand{\bbC}    {\mathbb{C}}
+\newcommand{\calP}   {{\cal{P}}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\DeclareMathOperator{\E}{E}
+\DeclareMathOperator{\Var}{Var}
+\DeclareMathOperator{\cov}{cov}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\centerline{\bf EECS 336}
+
+\medskip
+\centerline{Jiaju Ni}
+\centerline{Homework 6}
+\bigskip
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% problem 1
+\problem{1}
+\begin{enumerate}
+	\item
+		Let $d_i$ of an element $i$ is its depth in the corresponding binary tree. The element at the root has depth 1. We define the potential function $\Phi$ of heap $H$ as follows,
+		\[\Phi(H)=\sum_{i\in H}d_i\]
+		Let $n_i$ be the number of elements in the heap after nth operation, $H_i$ be the heap after nth operation. Then, $\Phi(H_0)=0$ and $\Phi(H_i)\geq 0$ beacuse $n_i\geq 0$ and $d_i\geq 0$. So, the total amortized cost of a sequence of $n$ \textsc{Insert} and \textsc{Extract-Min} operations is an upper bound on the total actual cost.\par
+		For \textsc{Insert} opertaion, we insert the new element at the end of the heap in contant time. This increase the potential function by $d_i$ where $d_i=\log n_i$. Then, we do $Bubble Up$ operation at most $\log n_i$ times.The potential function $\Phi(H_i)$ is unchanged. The amortized cost for \textsc{Insert} operation is
+		\begin{align*}
+			\widehat{c}_i&=c_i+\Phi(H_i)-\Phi(H_{i-1})\\
+			&=\log n_i +\log n_i\\
+			&=2\log n_i\\
+			&=O(\log n)
+		\end{align*}\par
+		For \textsc{Extract-Min} operation, we remove the root and fill the root with the last element in constant time and do \textsc{Bubble Down} operation at most $\log n_i$ times. So, $\Phi(H_i) = \Phi(H_{i-1}) - d_i$. The amortized cost for \textsc{Extract-Min} operation is
+		\begin{align*}
+			\widehat{c}_i&=c_i+\Phi(H_i)-\Phi(H_{i-1})\\
+			&=\log n_i-\log n_{i-1}\\
+			&=\log n_i-\log(n_i+1)\\
+			&\leq 1\\
+			&=O(1)
+		\end{align*}
+	\item
+		No. Since $\widehat{c}_i=c_i+\Phi(H_i)-\Phi(H_{i-1})$ and $c_i=O(\log n)$, if we want the amortized cost of \textsc{Insert} operation to be $O(1)$, then $\Delta\Phi(H)$ have to be negative, which means that we undercharge the cost of \textsc{Insert} operation and we pay for this undercharged portion in the \textsc{Extract-Min} operation. Since the number of \textsc{Insert} operation is never less than the number of \textsc{Extract-Min} operation, the potential function is almost always negative. So, this is not possible.
+\end{enumerate}
+
+% problem 2
+\problem{2}
+\begin{enumerate}
+	\item
+		This is a Banker's Queue. We use two ordinary stacks A and B to implement a queue. For \textsc{Enqueue} operation, we just push the value into stack A. For \textsc{Dequeue} operation we first check whether stack B is empty. If not, we just do \textsc{Pop} on stack B. If it is empty, we \textsc{Pop} all the values in stack A one by one and \textsc{Push} it into stack B. Then, we \textsc{Pop} one value out of stack B. For \textsc{Multi-Dequeue} operation, we do \textsc{Pop} on stack B multiple times and if stack B do not have enough elements in it, move the values in stack A into stack B like we did in \textsc{Dequeue} operation.\par
+		Assign the following amortized costs:\\
+		\begin{center}
+		\begin{tabular} {r c}
+			Enqueue & 4 \\
+			Dequeue & 0 \\
+			Multi-Dequeue & 0 \\
+		\end{tabular}
+		\end{center}
+		For the maortized analysis, let us charge an amortized cost of 4 dollars to enqueue an value into the queue. The \textsc{Enqueue} operation itself cost 1 dollar (out of 4 dollars charged) to pay for the actual \textsc{Push} operation into stack A. We place 2 dollars on each value as credit to pay for the moving from stack A to stack B later when stack B is empty which is actually a \textsc{Pop} on stack A and a \textsc{Push} on stack B. We place the last 1 dollar as credit to pay for the \textsc{Dequeue} operation which is actually a \textsc{Pop} operation on stack B.\par
+		At any point in time, every value in stack A has 3 dollars of credit on it and thus we can charge nothing to move the value to stack B and pop it out later. At any point in time, every value in stack B has 1 dollar of credit on it and thus we can charge nothing to pop it out of stack B if there is a \textsc{Dequeue} or \textsc{Multi-Dequeue} operation.\par
+		The number of values in stack A and stack B never becomes negative, and thus the amount of credit stays nonnegative at all times. Thus for n \textsc{Enqueue}, \textsc{Dequeue} and \textsc{Multi-Dequeue} operations, the total amortized cost is $O(n)$, which bounds the total actual cost.\par
+	\item
+
+\end{enumerate}
+
+% problem 3
+\problem{3}
+In order to reach the goal that any sequence of $m$ \textsc{Insert} and \textsc{Delete-Larger} operations runs in $O(m)$ time, the amortized cost of both operations should be $O(1)$. We can achieve this via using the Quickselect or Median-of-medians(BFPRT) algorithm which finds the k-th element in linear time.\par
+We use a dymanic table to store the values. For insertion, we store the value in the table in constant time and expand the table (if necessary) in linear time. For multi-deletion, we find the pivot value via Quickselect or Median-of-medians algorithm in linear time and do an extra linear secan to delete the value larger than the pivot value.\par
+We use accounting method for amortized analysis and assign the following amortized costs:
+\begin{center}
+	\begin{tabular}{r c}
+		Insert & $7+c$\\
+		Delete-Larger & 0 \\
+	\end{tabular}
+\end{center}
+For the amortized analysis, let us charge an amortized cost of $7+c$ dollars to the \textsc{Insert} operation. The \textsc{Insert} operation itself cost 1 dollar (out of $7+c$ dollars charged) to pay for the operation itself. We place 2 dollars for the future expansion, one for moving the value itself when the table expands, one for moving another item that has already been moved once when table expands. We place 2 dollars for the future contraction. We also place 2 dollars as credit for future deletion, one for finding the pivot value (Since the time complexity for finding k-th element is $O(n)$, the amortized cost for this operation could be considered as 1.) and the other one for delete the value itself.\par
+The last $c$ dollars overcharged in \textsc{Insert} operation is also for compensating the cost of \textsc{Delete-Larger} operation. In the case of deletion, all elements in the dynamic table spend 1 credit for the pivot finding operation. The $c$ credits in the deleted values is used to compensate this cost of the undeleted values. We have
+\begin{align*}
+	m\cdot(1-\frac{1}{k})&=m\cdot c\cdot\frac{1}{k}\\
+	c&=k-1\\
+	c&\leq 3\\
+\end{align*}
+So, we get the amortized cost of each operation:
+\begin{center}
+	\begin{tabular}{r c}
+		Insert & 10\\
+		Delete-Larger & 0 \\
+	\end{tabular}
+\end{center}
+The number of valus in the dynamic table never becomes negative, and thus the amount of creidt stays nonnegative at all times. Thus, for $m$ \textsc{Insert} and \textsc{Delete-Larger} operations, the total amortized cost is $O(n)$, which bounds the total actual cost.
+
+% problem 4
+\problem{4}
+\solution
+
+% problem 5
+\problem{5}
+\end{document}
