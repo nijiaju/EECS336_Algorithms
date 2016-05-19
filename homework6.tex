@@ -89,7 +89,7 @@
 		At any point in time, every value in stack A has 3 dollars of credit on it and thus we can charge nothing to move the value to stack B and pop it out later. At any point in time, every value in stack B has 1 dollar of credit on it and thus we can charge nothing to pop it out of stack B if there is a \textsc{Dequeue} or \textsc{Multi-Dequeue} operation.\par
 		The number of values in stack A and stack B never becomes negative, and thus the amount of credit stays nonnegative at all times. Thus for n \textsc{Enqueue}, \textsc{Dequeue} and \textsc{Multi-Dequeue} operations, the total amortized cost is $O(n)$, which bounds the total actual cost.\par
 	\item
-
+		No. We can concatenate two stacks(LIFOs) to make it a queue(FIFO). However, concatenating two queues(FIFOs) still gets a queue. So, each time we want to pop a element which is at the tail position of the queue, we must dequeue all the elements in the queue first. In this manner, the time complexity of dequque a item is always $O(n)$ and the amortized cost could never be constant.
 \end{enumerate}
 
 % problem 3
@@ -121,8 +121,33 @@ The number of valus in the dynamic table never becomes negative, and thus the am
 
 % problem 4
 \problem{4}
-\solution
+This algorithm is not correct. If the wieght of edges in $E_1$ are extremely large and the edges across the cut $(V_1, V_2)$ are extremely small. Then, in the minimum spanning tree of $G$, every vertex in $V_1$ should connected to $V_2$ via the edges across the cut, rather than the edges in $E_1$.\par
+For example, $V_1=\{A, B\}$ and $V_2=\{C, D\}$, $E_1=\{e_{AB}=100\}$, $E_2=\{e_{CD}=100\}$, $E_{cut}=\{e_{AC}=1, e_{BD}=1\}$. The weight of minimum spanning tree got from this algorithms is 201 while the correct result is 102.
 
 % problem 5
 \problem{5}
+Before the check the correctness of the result, we should make sure that $v.d$ and $v.\pi$ are well formed. Here is the checklist:
+\begin{enumerate}
+	\item $s.d=0$ and $s.\pi=nil$
+	\item for all vectices $v\in V$ that $v.\pi\neq nil$, $v.d=v.\pi.d+w(v.\pi,v)$
+	\item for all vertices $v\in V$ that $v.\pi= nil$ and $v\neq s$, $v.d=\infty$.
+\end{enumerate}\par
+If the shortest path is well-formed then we check the correctness. Since all edge weights are nonnegative, the triangle inequality will always hold if the $v.d$ and $v.\pi$ results are correct. Thus, for all edges $(u,v)\in E$, we have
+\begin{align*}
+	v.d&=\delta(s,v)\\
+	&\leq\delta(s,u)+w(u,v)\\
+	&=u.d+w(u,v)
+\end{align*}
+Here is the algorithm:
+\begin{algorithmic}[1]
+	\STATE $flag \leftarrow true$
+	\FOR {every edge $(u,v)\in E$}
+	\IF {$v.d>u.d+w(u.v)$}
+	\STATE $flag \leftarrow false$
+	\ENDIF
+	\ENDFOR
+	\RETURN $flag$
+\end{algorithmic}
+The algorithm returns false if the shortest path is incorrect and true if it is correct.\par
+When checking the wellformness of the path, we loop over each vertex in the graph which cost $O(V)$ time. When checking the correctness of the path, we loop over each edge in the graph, which cost $O(E)$ time. So, the total running time is $O(V+E)$.
 \end{document}
