@@ -1,0 +1,208 @@
+\documentclass[12pt,letterpaper]{article}
+\usepackage{amsmath, amssymb}
+\usepackage{fullpage}
+\usepackage{enumitem}
+\usepackage{algorithmic}
+\usepackage{algorithm}
+\pagestyle{empty}
+\def\pp{\par\noindent}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\renewcommand{\baselinestretch}{1.2}
+\newcommand{\problem}[1]{ \bigskip \pp \textbf{Problem #1}\par}
+\newcommand{\solution}{\medskip\pp\textit{Solution:}\par}
+\newcommand{\answer}{\medskip\pp\textit{Answer:} }
+\newcommand{\lemma}[1]{\pp\textbf{\textit{Lemma #1:}}}
+\newcommand{\proof}{\pp\textbf{\textit{Proof: }}}
+\newcommand{\hint}[1] {\par{\footnotesize {\bf Hint:} #1}}
+\newcommand{\remark}[1]{\par{\footnotesize {\bf Remark:} #1}}
+\newcommand{\correctness}{\medskip\pp\textit{Correctness:}\par}
+\newcommand{\timecomplexity}{\medskip\pp\textit{Time Complicity:}\par}
+\renewcommand{\algorithmicrequire}{\textbf{Input: }}
+\renewcommand{\algorithmicensure}{\textbf{Output: }}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\bbZ}    {\mathbb{Z}}
+\newcommand{\bbQ}    {\mathbb{Q}}
+\newcommand{\bbN}    {\mathbb{N}}
+\newcommand{\bbB}    {\mathbb{B}}
+\newcommand{\bbR}    {\mathbb{R}}
+\newcommand{\bbC}    {\mathbb{C}}
+\newcommand{\calP}   {{\cal{P}}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\DeclareMathOperator{\E}{E}
+\DeclareMathOperator{\Var}{Var}
+\DeclareMathOperator{\cov}{cov}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\centerline{\bf EECS 336}
+
+\medskip
+\centerline{Jiaju Ni}
+\centerline{Homework 7}
+\bigskip
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% problem 1
+\problem{1}
+\begin{enumerate}
+	\item
+		\begin{enumerate}
+			\item If $\alpha_{i-1}>1/2$ and $\alpha_i\geq1/2$, then
+				\begin{align*}
+					\widehat{c}_i&=c_i+\Phi_i-\Phi_{i-1}\\
+					&=1+(2\cdot num_i-size_i)-(2\cdot num_{i-1}-size_{i-1})\\
+					&=1+(2(num_{i-1}-1)-size_{i-1})-(2\cdot num_{i-1}-size_{i-1})\\
+					&=-1
+				\end{align*}
+			\item If $\alpha_{i-1}=1/2$ and $\alpha_i<1/2$, then
+				\begin{align*}
+					\widehat{c}_i&=c_i+\Phi_i-\Phi_{i-1}\\
+					&=1+(size_i/2-num_i)-(2\cdot num_{i-1}-size_{i-1})\\
+					&=1+(size_{i-1}/2-(num_{i-1}-1))-(2\cdot num_{i-1}-size_{i-1})\\
+					&=2+\frac{3}{2}size_{i-1}-3\cdot num_{i-1}\\
+					&=2+\frac{3}{2}size_{i-1}-\frac{3}{2}size_{i-1}\\
+					&=2
+				\end{align*}
+		\end{enumerate}
+		Therefore, the amortized cost of \textsc{Table-Delete} is bounded above by a constant.
+	\item
+		The modified potential function is
+		\[
+			\Phi(T)=
+			\begin{cases}
+				8\cdot T.num-4\cdot T.size & \text{If } \alpha(T)\geq1/2\\
+				5\cdot T.size-10\cdot T.num & \text{If } \alpha(T)<1/2
+			\end{cases}
+		\]
+		\begin{enumerate}
+			\item If $\alpha_{i-1}>1/2$ and $\alpha_i\geq1/2$, then
+				\begin{align*}
+					\widehat{c}_i&=c_i+\Phi_i-\Phi_{i-1}\\
+					&=1+(8\cdot num_i-4\cdot size_i)-(8\cdot num_{i-1}-4\cdot size_{i-1})\\
+					&=1+(8(num_{i-1}-1)-4\cdot size_{i-1})-(8\cdot num_{i-1}-4\cdot size_{i-1})\\
+					&=-7
+				\end{align*}
+			\item If $\alpha_{i-1}=1/2$ and $\alpha_i<1/2$, then
+				\begin{align*}
+					\widehat{c}_i&=c_i+\Phi_i-\Phi_{i-1}\\
+					&=1+(5\cdot size_i-10\cdot num_i)-(8\cdot num_{i-1}-4\cdot size_{i-1})\\
+					&=1+(5\cdot size_{i-1}-10(num_{i-1}-1))-(8\cdot num_{i-1}-4\cdot size_{i-1})\\
+					&=11+9\cdot size_{i-1}-18\cdot num_{i-1}\\
+					&=11+9\cdot size_{i-1}-18\cdot\frac{1}{2}size_{i-1}\\
+					&=11
+				\end{align*}
+		\end{enumerate}
+		Therefore, the amortized cost of \textsc{Table-Delete} by the modified potential function is bounded above by a constant.
+\end{enumerate}
+
+% problem 2
+\problem{2}
+\begin{enumerate}
+	\item
+		\begin{enumerate}
+			\item If $\alpha_{i-1}>1/2$ and $\alpha_i\geq1/2$, then
+				\begin{align*}
+					\widehat{c}_i&=c_i+\Phi_i-\Phi_{i-1}\\
+					&=1+(2\cdot num_i-size_i)-(2\cdot num_{i-1}-size_{i-1})\\
+					&=1+(2(num_{i-1}-1)-size_{i-1})-(2\cdot num_{i-1}-size_{i-1})\\
+					&=-1
+				\end{align*}
+			\item If $\alpha_{i-1}=1/2$ and $\alpha_i<1/2$, then
+				\begin{align*}
+					\widehat{c}_i&=c_i+\Phi_i-\Phi_{i-1}\\
+					&=1+(size_i-2\cdot num_i)-(2\cdot num_{i-1}-size_{i-1})\\
+					&=1+(size_{i-1}-2(num_{i-1}-1))-(2\cdot num_{i-1}-size_{i-1})\\
+					&=3+2\cdot size_{i-1}-4\cdot num_{i-1}\\
+					&=3+2\cdot size_{i-1}-4\cdot\frac{1}{2}size_{i-1}\\
+					&=3
+				\end{align*}
+			\item If $1/3<\alpha_{i-1}\leq1/2$ and $1/3\leq\alpha_i\leq1/2$, then
+				\begin{align*}
+					\widehat{c}_i&=c_i+\Phi_i-\Phi_{i-1}\\
+					&=1+(size_i-2\cdot num_i)-(size_{i-1}-2\cdot num_{i-1})\\
+					&=1+(size_{i-1}-2(num_{i-1}-1))-(size_{i-1}-2\cdot num_{i-1})\\
+					&=3
+				\end{align*}
+			\item If $\alpha_{i-1}=1/3$, then
+				\begin{align*}
+					\widehat{c}_i&=c_i+\Phi_i-\Phi_{i-1}\\
+					&=num_i+1+(size_i-2\cdot num_i)-(size_{i-1}-2\cdot num_{i-1})\\
+					&=num_{i-1}-1+1+(\frac{2}{3}size_{i-1}-2\cdot(num_{i-1}-1))-(size_{i-1}-2\cdot num_{i-1})\\
+					&=2-\frac{1}{3}size_{i-1}+num_{i-1}\\
+					&=2-\frac{1}{3}size_{i-1}+\frac{1}{3}size_{i-1}\\
+					&=2
+				\end{align*}
+		\end{enumerate}
+		Therefore, the amortized cost of a \textsc{Table-Delete} that uses this strategy is bounded above by a constant.
+	\item
+\end{enumerate}
+
+% problem 3
+\problem{3}
+Let $L_{opt}$ denotes an algorithm for the optimization problem \textsc{Longest-Path-Length} and $L_{dec}$ denotes an algorithm for the decision problem \textsc{Longest-Path}.\par
+\lemma{1} If \textsc{Longest-Path} $\in P$, then the time complexity for $L_{opt}$ is $O(n^k)$ for constant $k$ where $n=|G|$.
+\proof The algorithm $L_{opt}$ is as following:
+\begin{algorithm}
+	\caption{$L_{opt}$}
+\begin{algorithmic}[1]
+	\REQUIRE $\langle G, u, v\rangle$
+	\ENSURE the size of the longest path between vertex $u$ and vertex $v$ if it exists or $-1$ if it does not exist
+	\STATE $k = |G| - 1$
+	\WHILE {$k\geq0$ \AND $L_{dec}(G,u,v,k)=\FALSE$}
+	\STATE $k=k-1$
+	\ENDWHILE
+	\RETURN $k$
+\end{algorithmic}
+\end{algorithm}
+Since \textsc{Longest-Path} $\in P$, it is solvable in polynomial time. So, its time complexity is $O(n^{k'})$ for constant $k'$. The while loop has at most $n$ iterations and in each iteration we call $L_{dec}$ once. So, running time for $L_{opt}$ is $n^{k'+1}$ for constant $k'+1$.
+\lemma{2} If \textsc{Longest-Path} $\notin P$, then $L_{opt}$ cannot be solved in polynomial time.
+\proof The above algorithm shows that $T(L_{opt})=n\cdot T(L_{dec})$, so $L_{opt}$ cannot be sloved in polynomial time if \textsc{Longest-Path} $\notin P$.\par
+From \textit{Lemma 1} and \textit{Lemma 2} we can conclude that the optimization problem \textsc{Longest-Path-Length} can be solved in polynomial time if and only if \textsc{Longest-Path} $\in P$.
+
+% problem 4
+\problem{4}
+Let $f_{m\to l}$ denotes an algorithm converting a graph represented in adjacency matrix to which represented in adjacency list and $f_{l\to m}$ denotes the inverse algorithm of $f_{m\to l}$.
+\begin{algorithm}
+	\caption{$f_{m\to l}$}
+	\begin{algorithmic}[1]
+		\STATE $adj\_list \leftarrow$ an array of $|G|$ empty lists
+		\FORALL {$v_1$ in $adj\_matrix$}
+		\FORALL {$v_2$ in $adj\_matrix[v_1]$ such that $v_2\neq v_1$}
+		\IF {$adj\_matrix[v_1][v_2]\neq\infty$}
+		\STATE append $v_2$ to $adj\_list[v_1]$
+		\ENDIF
+		\ENDFOR
+		\ENDFOR
+	\end{algorithmic}
+\end{algorithm}
+\begin{algorithm}
+	\caption{$f_{l\to m}$}
+	\begin{algorithmic}[1]
+		\STATE $n \leftarrow |G|$
+		\STATE $adj\_matrix \leftarrow$ an $n\times n$ array with each element initialized to $\infty$
+		\FORALL {$l_1$ in $adj\_list$}
+		\FORALL {$v_2$ and $e$ in $l_1$}
+		\STATE $adj\_matrix[l_1][v_2] \leftarrow e$
+		\ENDFOR
+		\ENDFOR
+	\end{algorithmic}
+\end{algorithm}
+The ablove two algorithms can both run in $O(|G|^2)$ time. So there exist two polynomial-time computable functions $f_{m\to l}$ and $f_{l\to m}$ such that for any $g\in\text{ directed graph } G$, we have $f_{m\to l}(adj\_matrix(g))=adj\_list(g)$ and $f_{l\to m}(adj\_list(g))=adj\_matrix(g)$. Therefore, two representations are polynomially related.
+
+% problem 5
+\problem{5}
+No. The dynamic-programming algorithm for the 0-1 knapsack problem runs in $\Theta(nW)$ time, where $n$ is the number of items and $W$ is the size of the knapsack. It is bound not only on the size of the input $n$ but also on the magnitude of the input $W$. If $W$ is encoded in a computer in binary, then
+\begin{align*}
+	T(n)&=\Theta(nW)\\
+	&=\Theta(n2^{\log W})\\
+	&=\Theta(n2^{\text{length of W}})
+\end{align*}
+If we add one bit in the length of code of $W$, then the running time will be doubled. So, it is not a polynomial-time problem.
+\end{document}
