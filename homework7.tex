@@ -142,13 +142,49 @@
 		\end{enumerate}
 		Therefore, the amortized cost of a \textsc{Table-Delete} that uses this strategy is bounded above by a constant.
 	\item
+		The potential function is $|1/2\cdot T.size-2\cdot T.num|$.
+		\begin{enumerate}
+			\item If $\alpha_{i-1}>1/4$ and $\alpha_i\geq1/4$, then
+				\begin{align*}
+					\widehat{c}_i&=c_i+\Phi_i-\Phi_{i-1}\\
+					&=1+(2\cdot num_i-\frac{1}{2}size_i)-(2\cdot num_{i-1}-\frac{1}{2}size_{i-1})\\
+					&=1+(2(num_{i-1}-1)-\frac{1}{2}size_{i-1})-(2\cdot num_{i-1}-\frac{1}{2}size_{i-1})\\
+					&=-1
+				\end{align*}
+			\item If $\alpha_{i-1}=1/4$ and $\alpha_i<1/4$, then
+				\begin{align*}
+					\widehat{c}_i&=c_i+\Phi_i-\Phi_{i-1}\\
+					&=1+(2\cdot num_i-\frac{1}{2}size_i)-(\frac{1}{2}size_{i-1}-2\cdot num_{i-1})\\
+					&=1+(2(num_{i-1}-1)-\frac{1}{2}size_{i-1})-(\frac{1}{2}size_{i-1}-2\cdot num_{i-1})\\
+					&=4\cdot num_{i-1}-size_{i-1}-1\\
+					&=4\cdot\frac{1}{4}size_{i-1}-size_{i-1}-1\\
+					&=-1
+				\end{align*}
+			\item If $1/6<\alpha_{i-1}\leq1/4$ and $1/6\leq\alpha\leq1/4$, then
+				\begin{align*}
+					\widehat{c}_i&=c_i+\Phi_i-\Phi_{i-1}\\
+					&=1+(\frac{1}{2}size_i-2\cdot num_i)-(\frac{1}{2}size_{i-1}-2\cdot num_{i-1})\\
+					&=1+(\frac{1}{2}size_{i-1}-2(num_{i-1}-1))-(\frac{1}{2}size_{i-1}-2\cdot num_{i-1})\\
+					&=3
+				\end{align*}
+			\item If $\alpha_{i-1}=1/6$, then
+				\begin{align*}
+					\widehat{c}_i&=c_i+\Phi_i-\Phi_{i-1}\\
+					&=num_i+1+(\frac{1}{2}size_i-2\cdot num_i)-(\frac{1}{2}size_{i-1}-2\cdot num_{i-1})\\
+					&=num_{i-1}-1+1+(\frac{1}{2}\cdot\frac{2}{3}size_{i-1}-2(num_{i-1}-1))-(\frac{1}{2}size_{i-1}-2\cdot num_{i-1})\\
+					&=num_{i-1}-\frac{1}{6}size_{i-1}+2\\
+					&=\frac{1}{6}size_{i-1}-\frac{1}{6}size_{i-1}+2\\
+					&=2
+				\end{align*}
+		\end{enumerate}
+		Therefore, the amortized cost of a \textsc{Table-Delete} that uses this strategy is bounded above by a c    onstant.
 \end{enumerate}
 
 % problem 3
 \problem{3}
 Let $L_{opt}$ denotes an algorithm for the optimization problem \textsc{Longest-Path-Length} and $L_{dec}$ denotes an algorithm for the decision problem \textsc{Longest-Path}.\par
 \lemma{1} If \textsc{Longest-Path} $\in P$, then the time complexity for $L_{opt}$ is $O(n^k)$ for constant $k$ where $n=|G|$.
-\proof The algorithm $L_{opt}$ is as following:
+\proof The algorithm $L_{opt}$ is as following (algorithm 1):
 \begin{algorithm}
 	\caption{$L_{opt}$}
 \begin{algorithmic}[1]
@@ -160,7 +196,7 @@ Let $L_{opt}$ denotes an algorithm for the optimization problem \textsc{Longest-
 	\ENDWHILE
 	\RETURN $k$
 \end{algorithmic}
-\end{algorithm}
+\end{algorithm}\par
 Since \textsc{Longest-Path} $\in P$, it is solvable in polynomial time. So, its time complexity is $O(n^{k'})$ for constant $k'$. The while loop has at most $n$ iterations and in each iteration we call $L_{dec}$ once. So, running time for $L_{opt}$ is $n^{k'+1}$ for constant $k'+1$.
 \lemma{2} If \textsc{Longest-Path} $\notin P$, then $L_{opt}$ cannot be solved in polynomial time.
 \proof The above algorithm shows that $T(L_{opt})=n\cdot T(L_{dec})$, so $L_{opt}$ cannot be sloved in polynomial time if \textsc{Longest-Path} $\notin P$.\par
@@ -168,7 +204,7 @@ From \textit{Lemma 1} and \textit{Lemma 2} we can conclude that the optimization
 
 % problem 4
 \problem{4}
-Let $f_{m\to l}$ denotes an algorithm converting a graph represented in adjacency matrix to which represented in adjacency list and $f_{l\to m}$ denotes the inverse algorithm of $f_{m\to l}$.
+Let $f_{m\to l}$ denotes an algorithm converting a graph represented in adjacency matrix to which represented in adjacency list and $f_{l\to m}$ denotes the inverse algorithm of $f_{m\to l}$.\par
 \begin{algorithm}
 	\caption{$f_{m\to l}$}
 	\begin{algorithmic}[1]
@@ -181,7 +217,7 @@ Let $f_{m\to l}$ denotes an algorithm converting a graph represented in adjacenc
 		\ENDFOR
 		\ENDFOR
 	\end{algorithmic}
-\end{algorithm}
+\end{algorithm}\par
 \begin{algorithm}
 	\caption{$f_{l\to m}$}
 	\begin{algorithmic}[1]
@@ -193,8 +229,8 @@ Let $f_{m\to l}$ denotes an algorithm converting a graph represented in adjacenc
 		\ENDFOR
 		\ENDFOR
 	\end{algorithmic}
-\end{algorithm}
-The ablove two algorithms can both run in $O(|G|^2)$ time. So there exist two polynomial-time computable functions $f_{m\to l}$ and $f_{l\to m}$ such that for any $g\in\text{ directed graph } G$, we have $f_{m\to l}(adj\_matrix(g))=adj\_list(g)$ and $f_{l\to m}(adj\_list(g))=adj\_matrix(g)$. Therefore, two representations are polynomially related.
+\end{algorithm}\par
+The above two algorithms (algorithm 2 and algorithm 3) can both run in $O(|G|^2)$ time. So there exist two polynomial-time computable functions $f_{m\to l}$ and $f_{l\to m}$ such that for any $g\in\text{ directed graph } G$, we have $f_{m\to l}(adj\_matrix(g))=adj\_list(g)$ and $f_{l\to m}(adj\_list(g))=adj\_matrix(g)$. Therefore, two representations are polynomially related.
 
 % problem 5
 \problem{5}
