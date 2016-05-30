@@ -1,0 +1,192 @@
+\documentclass[12pt,letterpaper]{article}
+\usepackage{amsmath, amssymb}
+\usepackage{fullpage}
+\usepackage{enumitem}
+\usepackage{algorithmic}
+\usepackage{algorithm}
+\pagestyle{empty}
+\def\pp{\par\noindent}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\renewcommand{\baselinestretch}{1.2}
+\newcommand{\problem}[1]{ \bigskip \pp \textbf{Problem #1}\par}
+\newcommand{\solution}{\medskip\pp\textit{Solution:}\par}
+\newcommand{\answer}{\medskip\pp\textit{Answer:} }
+\newcommand{\lemma}[1]{\pp\textbf{\textit{Lemma #1:}}}
+\newcommand{\proof}{\pp\textbf{\textit{Proof: }}}
+\newcommand{\hint}[1] {\par{\footnotesize {\bf Hint:} #1}}
+\newcommand{\remark}[1]{\par{\footnotesize {\bf Remark:} #1}}
+\newcommand{\correctness}{\medskip\pp\textit{Correctness:}\par}
+\newcommand{\timecomplexity}{\medskip\pp\textit{Time Complicity:}\par}
+\renewcommand{\algorithmicrequire}{\textbf{Input: }}
+\renewcommand{\algorithmicensure}{\textbf{Output: }}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\bbZ}    {\mathbb{Z}}
+\newcommand{\bbQ}    {\mathbb{Q}}
+\newcommand{\bbN}    {\mathbb{N}}
+\newcommand{\bbB}    {\mathbb{B}}
+\newcommand{\bbR}    {\mathbb{R}}
+\newcommand{\bbC}    {\mathbb{C}}
+\newcommand{\calP}   {{\cal{P}}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\DeclareMathOperator{\E}{E}
+\DeclareMathOperator{\Var}{Var}
+\DeclareMathOperator{\cov}{cov}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\centerline{\bf EECS 336}
+
+\medskip
+\centerline{Jiaju Ni}
+\centerline{Homework 7}
+\bigskip
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% problem 1
+\problem{1}
+Given two graphs $G_1$ and $G_2$ (which has $n$ vertices and $m$ edges), and a mapping $f$ (from set $S_1$ to set $S_2$), we can verify the \textsc{Graph-Isomorphism} problem in the following steps:
+\begin{enumerate}[itemsep=0mm]
+	\item For each vertex $v$ in $G_1$, if $v\notin S_1$, return false.
+	\item For each vertex $v$ in $S_1$, if $v\notin G_1$, return false.
+	\item For each vertex $v$ in $G_2$, if $v\notin S_2$, return false.
+	\item For each vertex $v$ in $S_2$, if $v\notin G_2$, return false.
+	\item For each vertex $v$ in $G_1$, if $f(v)\notin G_2$, return false.
+	\item For each edge $e(v_1,v_2)$ in $G_1$, if $e(f(v_1),f(v_2))\notin G_2$, return false.
+\end{enumerate}
+If none of the above step returns false, then $f$ is a verification.
+\timecomplexity
+The steps $(1)$ to $(5)$ cost $O(n)$ time each, and step $(6)$ costs $O(m)=O(n^2)$ time. So, the overall running time is polynomial. Therefore, \textsc{Graph-Isomorphism} $\in$ NP.
+
+% problem 2
+\problem{2}
+The complement of \textsc{Tautology} problem is: If an assignment of $1$ and $0$ to the input variables exists to make the formula $\phi$ evaluate to 0, then formula $\phi$ is \textsc{co-Tautology}.\par
+So, if we can verify the \textsc{co-Tautology} problem in polynomial time, then we can prove that \textsc{Tautology} $\in$ co-NP.\par
+Given a formula $\phi$ which has $n$ input variables and $m$ operationes (ANDs, ORs, Negations), the length of the input code is $O(m+n)$. Also given an assignment to the $n$ input variables (which is $O(n)$ length), we can verity this assignment in polynomial time by substitute the variables with its assigned value and calculate the operations one by one.\par
+Thus, \textsc{co-Tautology} $\in$ NP. Therefore, \textsc{Tautology} $\in$ co-NP.
+
+% problem 3
+\problem{3}
+\begin{enumerate}
+	\item We use breadth first search to solve the 2-coloring problem.\\
+		\begin{enumerate}[itemsep=0mm]
+			\item We start with a random vertex in the graph that has not been colored and assign one color to it. Then we assign the opposite color to its neighbors and push them in a queue $Q$.
+			\item We pop the front vertex $v$ from queue $Q$. If the neighbor of $v$ has not been assigned a color yet, we assign it the opposite color of $v$. If it already has a color, we check whether the assigned color is the opposite color of $v$. If not, exit and return false.
+			\item Do step (b) until the queue is empty.
+			\item If there still exist vertex that has not been colored yet, go back to step (a). Else, exit and return map from vertex to ite color. 
+		\end{enumerate}
+		This is an efficient algorithm, and it runs in $O(V+E)$ time.
+	\item
+		The decision problem is: given a graph $G=(V,E)$ and integer $k$, does a k-coloring exist?\\
+		If we can solve the decision problem in polynomial time, then we can solve the optimal problem in polynomial time. Because, we can always start with $k=2$ and increase $k$ by 1 if the result of the decision problem for $k$ is false and stop until we find a $k$ which makes the decision problem return true. Since $k\leq |V|$, we can solve the problem in at most $|V|$ iterations and $|V| \times$ polynomial time is still polynomial time.\\
+		If we cannot solve the decision problem in polynomial time, then we cannot solve the optimal problem in polynomial time. Beauce it is the contrapositive of an obvious true statment that we can solve the decision problem in polynomial time if we can solve the optimal problem in polynomial time.\\
+		Therefore, the decision problem is solvable in polynomial time if and onyl if the optimal problem is solvable in polynomial time.
+	\item To show that if \textsc{3-color} is NP-complete, then \textsc{k-color-decision} is NP-complete, we need to prove that \textsc{k-color-decision} $\in$ NP and \textsc{3-color} $\leq_P$ \textsc{k-color-decision}.
+		\begin{enumerate}[itemsep=0mm]
+			\item \textbf{k-color-decision $\in$ NP}\\
+				Given the graph $G$ and a map $f$ from each vertex to the color, we can verity the \textsc{k-color-decision} following steps:
+				\begin{enumerate}[itemsep=0mm]
+					\item For each vertex $v$, check whether $f(v) \in$ set of $k$ colors
+					\item For each edge $e(v_1, v_2)$, chenck whether $f(v_1) \neq f(v_2)$
+				\end{enumerate}
+				The above algorithm runs in polynomial time, so \textsc{k-color-decision} $\in$ NP.
+			\item \textbf{3-color $\leq_P$ k-color-decision}\\
+				Using the conclusion from the second sub-problem, we only need to prove \textsc{3-color-decision} $\leq_P$ \textsc{k-color-decision}\\
+				we can reduce the \textsc{3-color-decision} problem to \textsc{k-color-decision} by the following steps:
+				\begin{enumerate}[itemsep=0mm]
+					\item Add $k-3$ vertices, assign them with $k-3$ new colors
+					\item Create an edge from each newly added vertex to each original vertices.
+				\end{enumerate}
+				We can run the above algorithm in polynomial time and its correctness is obvious.
+		\end{enumerate}
+\end{enumerate}
+
+% problem 4
+\problem{4}
+\begin{enumerate}
+	\item \textbf{Hamiltonian Cycle $\leq_P$ CNF-SAT}\\
+		Let $G$ denote the input graph with $n$ veritces and $m$ edges and $v_1, v_2, \cdots, v_n$ denote the vertices in $G$.
+		Also let $W$ be the target Hamiltonian Cycle in $G$ and $w_1, w_2, \cdots, w_n$ be the sequence of vertices in $W$.
+		We keep the convention that $x(p, q) = $ true if and only if $w_p$ is $v_q$.\\
+		Since $W$ is an Hamiltonian Cycle in $G$, the following constraints will always apply.
+		\begin{enumerate}[itemsep=0mm]
+			\item Each $w_p$ is at least one of $v_1, v_2, \cdots, v_n$
+			\item Each $w_p$ is at most one of $v_1, v_2, \cdots, v_n$
+			\item Each $v_q$ is at least one of $w_1, w_2, \cdots, w_n$
+			\item Each $v_q$ is at most one of $w_1, w_2, \cdots, w_n$
+			\item For each $p$ in $1\cdots n-1$, $(w_p, w_{p+1})$ forms an edge in $G$
+		\end{enumerate}
+		The above constraints could be converted into CNF-SAT variables and clauses.\\
+		Boolean variables:
+		\[
+			\begin{bmatrix}
+				x(1,1) & x(1,2) & \hdots & x(1,n)\\
+				x(2,1) & x(2,2) & \hdots & x(2,n)\\
+				\vdots & \vdots & \vdots & \vdots\\
+				x(n,1) & x(n,2) & \hdots & x(n,n)
+			\end{bmatrix}
+		\]
+		Clauses:
+		\begin{enumerate}[itemsep=0mm]
+			\item For each $i$ in $1\cdots n$, $(x(i,1) \vee x(i,2) \vee \cdots \vee x(i,n))$
+			\item For each $i$ in $1\cdots n$ and each $j, k$ in $1\cdots n$ that $j\neq k$, $(\neg x(i,j) \vee \neg x(i,k))$
+			\item For each $i$ in $1\cdots n$, $(x(1,i) \vee x(2,i) \vee \cdots \vee x(n,i))$
+			\item For each $i$ in $1\cdots n$ and each $j, k$ in $1\cdots n$ that $j\neq k$, $(\neg x(j,i) \vee \neg x(k,i))$
+			\item For each edge $(v_j, v_k) \notin G$ and each $i$ in $1\cdots n-1$, $(\neg x(i,j) \vee \neg x(i,k))$
+		\end{enumerate}
+		\correctness
+		For each Hamiltonian Cycle in $G$, constraints $(a)$ to $(e)$ will always apply, and thus, the Clauses $(a)$ to $(e)$ of CNF-SAT will always true. So, if the Hamiltonian Cycle decision problem is satisfied, then the corresponding CNF-SAT decision problem will be satisfied.\\
+		For each Non-Hamiltonian Cycle in $G$, at least one of the constrains will be violated which makes the corresponding clauses of the CNF-SAT to be false. So, if the Hamiltonian Cycle decision problem is unsatisfied, then the corresponding CNF-SAF decision problem will also be unsatisfied.
+		\timecomplexity
+		In this reduction algorithm, there are $n\times n=O(n^2)$ boolean variables are created.\\
+		The converting from constrain $(a)$ and $(c)$ to clause set $(a)$ and $(c)$ each involves $n=O(n)$ clauses with $n=O(n)$ literals in each clause, so it is $O(n^2)$ time.\\
+		The converting from constrain $(b)$ and $(d)$ to clause set $(b)$ and $(d)$ each involves $n\times(n-1)=O(n^2)$ clauses with $2$ literals in each cluase, so it is $O(n^2)$ time.\\
+		The converting from constrain $(e)$ to clause set $(e)$ involves at most $(m-n+1)\cdot n=O(n^3)$ clauses with $2$ literals in each clause, so it is $O(n^3)$ time.\\
+		So, the overall time complexity is polynomial time.
+	\item \textbf{Hamiltonian Cycle $\leq_P$ 01-LP}\\
+		Let $G$ denote the input graph with $n$ veritces and $m$ edges and $v_1, v_2, \cdots, v_n$ denote the vertices in $G$.
+		Also let $W$ be the target Hamiltonian Cycle in $G$ and $w_1, w_2, \cdots, w_n$ be the sequence of vertices in $W$.
+		We keep the convention that $x(p, q) = $ true if and only if $w_p$ is $v_q$.\\
+		Since $W$ is an Hamiltonian Cycle in $G$, the following constraints will always apply.
+		\begin{enumerate}[itemsep=0mm]
+			\item Each $w_p$ is at least one of $v_1, v_2, \cdots, v_n$
+			\item Each $w_p$ is at most one of $v_1, v_2, \cdots, v_n$
+			\item Each $v_q$ is at least one of $w_1, w_2, \cdots, w_n$
+			\item Each $v_q$ is at most one of $w_1, w_2, \cdots, w_n$
+			\item For each $p$ in $1\cdots n-1$, $(w_p, w_{p+1})$ forms an edge in $G$
+		\end{enumerate}
+		The above constraints could be converted into 01-LP variables and inequalities.\\
+		Boolean variables:
+		\[
+			\begin{bmatrix}
+				x(1,1) & x(1,2) & \hdots & x(1,n)\\
+				x(2,1) & x(2,2) & \hdots & x(2,n)\\
+				\vdots & \vdots & \vdots & \vdots\\
+				x(n,1) & x(n,2) & \hdots & x(n,n)
+			\end{bmatrix}
+		\]
+		Inequalities:
+		\begin{enumerate}[itemsep=0mm]
+			\item For each $i$ in $1\cdots n$, $x(i,1)+x(i,2)+\cdots+x(i,n)\geq1$
+			\item For each $i$ in $1\cdots n$, $x(i,1)+x(i,2)+\cdots+x(i,n)\leq1$
+			\item For each $i$ in $1\cdots n$, $x(1,i)+x(2,i)+\cdots+x(n,i)\geq1$
+			\item For each $i$ in $1\cdots n$, $x(1,i)+x(2,i)+\cdots+x(n,i)\leq1$
+			\item For each edge $(v_j,v_k)\notin G$ and each $i$ in $1\cdots n$, $x(i,j)+x(i,k)\leq 1$
+		\end{enumerate}
+		\correctness
+		For each Hamiltonian Cycle in $G$, constraints $(a)$ to $(e)$ will always apply, and thus, the Clauses $(a)$ to $(e)$ of 01-LP will always true. So, if the Hamiltonian Cycle decision problem is satisfied, then the corresponding 01-LP decision problem will be satisfied.\\
+		For each Non-Hamiltonian Cycle in $G$, at least one of the constrains will be violated which makes the corresponding clauses of the 01-LP to be false. So, if the Hamiltonian Cycle decision problem is unsatisfied, then the corresponding 01-LP decision problem will also be unsatisfied.
+		\timecomplexity
+		In this reduction algorithm, there are $n\times n=O(n^2)$ boolean variables are created.\\
+		The converting from constrain $(a)$ to $(d)$ to clause set $(a)$ to $(d)$ each involves $n=O(n)$ clauses with $n=O(n)$ literals in each clause, so it is $O(n^2)$ time.\\
+		The converting from constrain $(e)$ to clause set $(e)$ involves at most $(m-n+1)\cdot n=O(n^3)$ clauses with $2$ literals in each clause, so it is $O(n^3)$ time.\\
+		So, the overall time complexity is polynomial time.
+		
+\end{enumerate}
+\end{document}
